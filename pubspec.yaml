@@ -11,6 +11,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  # GUI
+  intl: ^0.16.1
   # Masamune
   masamune_flutter: ^0.3.0
   masamune_firebase: ^0.3.0
