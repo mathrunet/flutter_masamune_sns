@@ -5,6 +5,9 @@ class SNSTimelineListTile extends StatelessWidget {
   /// Avatar image for the user.
   final ImageProvider avatar;
 
+  /// Content padding.
+  final EdgeInsets padding;
+
   /// User name.
   final String name;
 
@@ -39,6 +42,7 @@ class SNSTimelineListTile extends StatelessWidget {
       this.onTapProfile,
       this.image,
       this.likeCount,
+      this.padding = const EdgeInsets.all(0),
       this.likeIcon,
       this.text,
       this.onTapLike,
@@ -50,66 +54,69 @@ class SNSTimelineListTile extends StatelessWidget {
   /// [BuildContext]: Build Context.
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: const EdgeInsets.only(top: 10),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (this.name != null || this.avatar != null)
-              Container(
-                  child: ListTile(
-                      contentPadding: const EdgeInsets.symmetric(
-                          horizontal: 5, vertical: 0),
-                      dense: true,
-                      onTap: () {
-                        if (this.onTapProfile != null) this.onTapProfile();
-                      },
-                      leading: (this.avatar != null)
-                          ? Container(
-                              width: 35,
-                              height: 35,
-                              child: CircleAvatar(
-                                backgroundColor: context.theme.canvasColor,
-                                backgroundImage: this.avatar,
-                              ))
-                          : null,
-                      title: Text(this.name ?? Const.empty,
-                          style: context.theme.textTheme.headline6))),
-            if (this.image != null)
-              Container(
-                  color: context.theme.canvasColor,
-                  constraints: BoxConstraints.expand(height: 200),
-                  child: Image(image: this.image, fit: BoxFit.cover)),
-            if (this.likeIcon != null)
-              Container(
-                  constraints: BoxConstraints.expand(height: 50),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      IconButton(
-                        icon: this.likeIcon,
-                        onPressed: () {
-                          if (this.onTapLike != null) this.onTapLike();
-                        },
-                      ),
-                      if (this.likeCount != null) this.likeCount
-                    ],
-                  )),
-            if (this.text != null)
-              Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Text(this.text)),
-            if (this.time != null)
-              Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                  child: Text(
-                      (this.dateFormat ?? DateFormat.yMd().add_Hms())
-                          .format(this.time),
-                      style: context.theme.textTheme.caption)),
-            Divider()
-          ],
-        ));
+    return Padding(
+        padding: this.padding,
+        child: Container(
+            padding: const EdgeInsets.only(top: 10),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (this.name != null || this.avatar != null)
+                  Container(
+                      child: ListTile(
+                          contentPadding: const EdgeInsets.symmetric(
+                              horizontal: 5, vertical: 0),
+                          dense: true,
+                          onTap: () {
+                            if (this.onTapProfile != null) this.onTapProfile();
+                          },
+                          leading: (this.avatar != null)
+                              ? Container(
+                                  width: 35,
+                                  height: 35,
+                                  child: CircleAvatar(
+                                    backgroundColor: context.theme.canvasColor,
+                                    backgroundImage: this.avatar,
+                                  ))
+                              : null,
+                          title: Text(this.name ?? Const.empty,
+                              style: context.theme.textTheme.headline6))),
+                if (this.image != null)
+                  Container(
+                      color: context.theme.canvasColor,
+                      constraints: BoxConstraints.expand(height: 200),
+                      child: Image(image: this.image, fit: BoxFit.cover)),
+                if (this.likeIcon != null)
+                  Container(
+                      constraints: BoxConstraints.expand(height: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            icon: this.likeIcon,
+                            onPressed: () {
+                              if (this.onTapLike != null) this.onTapLike();
+                            },
+                          ),
+                          if (this.likeCount != null) this.likeCount
+                        ],
+                      )),
+                if (this.likeIcon == null && this.image != null) Space(),
+                if (this.text != null)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: Text(this.text)),
+                if (this.time != null)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: Text(
+                          (this.dateFormat ?? DateFormat.yMd().add_Hms())
+                              .format(this.time),
+                          style: context.theme.textTheme.caption)),
+                Divider()
+              ],
+            )));
   }
 }
