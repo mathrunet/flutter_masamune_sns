@@ -2,6 +2,16 @@ part of masamune.sns;
 
 /// Utility for SNS.
 class SNSUtility {
+  static void _increment(String path, int value) {
+    IDataField field = PathMap.get<IDataField>(path);
+    if (field == null) {
+      if (value < 0) return;
+      DataField(path, value);
+    } else {
+      field.data = ((field.data as int) + value.toInt()).limitLow(0);
+    }
+  }
+
   /// True if the ID is your own.
   ///
   /// [userId] can also be used in PathTag format.
@@ -26,6 +36,8 @@ class SNSUtility {
     final followDoc = FirestoreDocument.create("user/$userId/follow/$followId");
     FirestoreDocument followerDoc =
         FirestoreDocument.create("user/$followId/follower/$userId");
+    _increment("user/$followId/followerCount", 1);
+    _increment("user/$userId/followCount", 1);
     return Future.wait([followDoc.save(), followerDoc.save()]);
   }
 
@@ -39,6 +51,8 @@ class SNSUtility {
     if (isEmpty(followId) || isEmpty(userId)) return;
     followId = followId.applyTags();
     userId = userId.applyTags();
+    _increment("user/$followId/followerCount", -1);
+    _increment("user/$userId/followCount", -1);
     return Future.wait([
       FirestoreDocument.deleteAt("user/$followId/follower/$userId"),
       FirestoreDocument.deleteAt("user/$userId/follow/$followId")
@@ -82,6 +96,7 @@ class SNSUtility {
     final user = FirestoreDocument.create("user/$userId/like/$likeId");
     FirestoreDocument like =
         FirestoreDocument.create("$target/$likeId/liked/$userId");
+    _increment("$target/$likeId/likedCount", 1);
     return Future.wait([user.save(), like.save()]);
   }
 
@@ -98,6 +113,7 @@ class SNSUtility {
     likeId = likeId.applyTags();
     userId = userId.applyTags();
     target = target.applyTags();
+    _increment("$target/$likeId/likedCount", -1);
     return Future.wait([
       FirestoreDocument.deleteAt("user/$userId/like/$likeId"),
       FirestoreDocument.deleteAt("$target/$likeId/liked/$userId")
