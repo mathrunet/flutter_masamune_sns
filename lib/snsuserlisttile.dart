@@ -41,14 +41,16 @@ class SNSUserListTile extends StatelessWidget {
     return ListTile(
       leading: Container(width: 40, height: 40, child: this.icon),
       title: Text(this.name),
-      trailing: FlatButton.icon(
-        shape: StadiumBorder(),
-        icon: Icon(Icons.person_add, color: Colors.white),
-        onPressed: this.onButtonPressed,
-        label: Text(this.buttonText.localize(),
-            style: TextStyle(color: Colors.white)),
-        color: this.buttonColor ?? context.theme.accentColor,
-      ),
+      trailing: this.showButton
+          ? FlatButton.icon(
+              shape: StadiumBorder(),
+              icon: Icon(Icons.person_add, color: Colors.white),
+              onPressed: this.onButtonPressed,
+              label: Text(this.buttonText.localize(),
+                  style: TextStyle(color: Colors.white)),
+              color: this.buttonColor ?? context.theme.accentColor,
+            )
+          : null,
       onTap: this.onPressed,
     );
   }
