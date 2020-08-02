@@ -22,4 +22,3 @@ part 'snsuserlisttile.dart';
 part 'snstimelinelisttile.dart';
 part 'snsprofileheader.dart';
 part 'snsprofilecontrol.dart';
-part 'snsloader.dart';
