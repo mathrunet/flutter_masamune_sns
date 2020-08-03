@@ -229,17 +229,18 @@ class SNSUtility {
   ///
   /// [userId]: ID of the user to read.
   /// [length]: Number of cases to read.
-  static Future<IDataCollection> initUserTimeline(
-      {String userId, int length = 100}) {
-    FirestoreCollection.listen("user/[UID]/follow");
-    FirestoreDocument.listen("user/[UID]/like/$userId");
-    FirestoreDocument.listen("user/$userId");
-    FirestoreCollection.listen("user/$userId/follow");
-    FirestoreCollection.listen("user/$userId/follower");
-    return FirestoreCollection.listen("timeline?user=$userId",
-        query: FirestoreQuery.equalTo("user", userId)
-            .orderByDesc("postTime")
-            .limitAt(length));
+  static Future initUserTimeline({String userId, int length = 100}) {
+    return Future.wait([
+      FirestoreCollection.listen("user/[UID]/follow"),
+      FirestoreDocument.listen("user/[UID]/like/$userId"),
+      FirestoreDocument.listen("user/$userId"),
+      FirestoreCollection.listen("user/$userId/follow"),
+      FirestoreCollection.listen("user/$userId/follower"),
+      FirestoreCollection.listen("timeline?user=$userId",
+          query: FirestoreQuery.equalTo("user", userId.applyTags())
+              .orderByDesc("postTime")
+              .limitAt(length))
+    ]);
   }
 
   /// Collection for displaying the home timeline collection (self + follow).
