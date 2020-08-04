@@ -2,13 +2,17 @@ part of masamune.sns;
 
 /// Utility for SNS.
 class SNSUtility {
-  static void _increment(String path, int value) {
-    IDataField field = PathMap.get<IDataField>(path);
-    if (field == null) {
+  static Future _increment(String path, int value) async {
+    String parent = Paths.parent(path);
+    String key = Paths.last(path);
+    IDataDocument doc = PathMap.get(parent);
+    if (doc == null) {
       if (value < 0) return;
       DataField(path, value);
+      doc = await FirestoreDocument.listen(parent);
+      doc[key] = (doc.getInt(key, 0) + value).limitLow(0);
     } else {
-      field.data = ((field.data as int) + value.toInt()).limitLow(0);
+      doc[key] = (doc.getInt(key, 0) + value).limitLow(0);
     }
   }
 
@@ -36,9 +40,13 @@ class SNSUtility {
     final followDoc = FirestoreDocument.create("user/$userId/follow/$followId");
     FirestoreDocument followerDoc =
         FirestoreDocument.create("user/$followId/follower/$userId");
-    _increment("user/$followId/followerCount", 1);
-    _increment("user/$userId/followCount", 1);
-    return Future.wait([followDoc.save(), followerDoc.save()]);
+
+    return Future.wait([
+      followDoc.save(),
+      followerDoc.save(),
+      _increment("user/$followId/followerCount", 1),
+      _increment("user/$userId/followCount", 1)
+    ]);
   }
 
   /// Unfollow [userId] to [followId].
@@ -51,11 +59,11 @@ class SNSUtility {
     if (isEmpty(followId) || isEmpty(userId)) return;
     followId = followId.applyTags();
     userId = userId.applyTags();
-    _increment("user/$followId/followerCount", -1);
-    _increment("user/$userId/followCount", -1);
     return Future.wait([
       FirestoreDocument.deleteAt("user/$followId/follower/$userId"),
-      FirestoreDocument.deleteAt("user/$userId/follow/$followId")
+      FirestoreDocument.deleteAt("user/$userId/follow/$followId"),
+      _increment("user/$followId/followerCount", -1),
+      _increment("user/$userId/followCount", -1)
     ]);
   }
 
@@ -96,8 +104,12 @@ class SNSUtility {
     final user = FirestoreDocument.create("user/$userId/like/$likeId");
     FirestoreDocument like =
         FirestoreDocument.create("$target/$likeId/liked/$userId");
-    _increment("$target/$likeId/likedCount", 1);
-    return Future.wait([user.save(), like.save()]);
+
+    return Future.wait([
+      user.save(),
+      like.save(),
+      _increment("$target/$likeId/likedCount", 1)
+    ]);
   }
 
   /// Unlike the data ([likeId]) is placed in [target] by [userId].
@@ -113,10 +125,10 @@ class SNSUtility {
     likeId = likeId.applyTags();
     userId = userId.applyTags();
     target = target.applyTags();
-    _increment("$target/$likeId/likedCount", -1);
     return Future.wait([
       FirestoreDocument.deleteAt("user/$userId/like/$likeId"),
-      FirestoreDocument.deleteAt("$target/$likeId/liked/$userId")
+      FirestoreDocument.deleteAt("$target/$likeId/liked/$userId"),
+      _increment("$target/$likeId/likedCount", -1)
     ]);
   }
 
@@ -125,7 +137,8 @@ class SNSUtility {
   /// [context]: Build Context.
   /// [userId]: ID of the user to read.
   static IDataCollection readFollow(BuildContext context, {String userId}) {
-    return context.watch<IDataCollection>("joined/user/$userId/follow");
+    return context
+        .watch<IDataCollection>("joined/user/$userId/follow");
   }
 
   /// Button widget to load the next data of the following user.
@@ -134,7 +147,7 @@ class SNSUtility {
   /// [label]: Button label.
   static LoadNext loadNextFollow({String userId, String label}) {
     return LoadNext(
-      path: "user/$userId/follow",
+      path: "user/$userId/follow?user=$userId",
       label: label,
     );
   }
@@ -144,7 +157,7 @@ class SNSUtility {
   /// [userId]: ID of the user to read.
   /// [length]: Number of cases to read.
   static Future<IDataCollection> initFollow({String userId, int length = 100}) {
-    return FirestoreCollection.listen("user/$userId/follow",
+    return FirestoreCollection.listen("user/$userId/follow?user=$userId",
             query: FirestoreQuery().orderByDesc("time").limitAt(length))
         .joinAt(
             key: "uid",
@@ -161,7 +174,8 @@ class SNSUtility {
   /// [context]: Build Context.
   /// [userId]: ID of the user to read.
   static IDataCollection readFollower(BuildContext context, {String userId}) {
-    return context.watch<IDataCollection>("joined/user/$userId/follower");
+    return context
+        .watch<IDataCollection>("joined/user/$userId/follower");
   }
 
   /// Button widget to load the next data of the follower user.
@@ -170,7 +184,7 @@ class SNSUtility {
   /// [label]: Button label.
   static LoadNext loadNextFollower({String userId, String label}) {
     return LoadNext(
-      path: "user/$userId/follower",
+      path: "user/$userId/follower?user=$userId",
       label: label,
     );
   }
@@ -181,7 +195,7 @@ class SNSUtility {
   /// [length]: Number of cases to read.
   static Future<IDataCollection> initFollower(
       {String userId, int length = 100}) {
-    return FirestoreCollection.listen("user/$userId/follower",
+    return FirestoreCollection.listen("user/$userId/follower?user=$userId",
             query: FirestoreQuery().orderByDesc("time").limitAt(length))
         .joinAt(
             key: "uid",
@@ -194,7 +208,11 @@ class SNSUtility {
         .joinAt(
           key: "uid",
           builder: (col) {
-            return FirestoreCollection.listen("user/[UID]/follow");
+            return FirestoreCollection.listen(
+                "user/[UID]/follow?folllowerJoinedby=$userId",
+                query: col.length <= 0
+                    ? FirestoreQuery.empty()
+                    : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
           },
           onFound: (key, value, document, collection) {
             value["follow"] = true;
@@ -231,11 +249,10 @@ class SNSUtility {
   /// [length]: Number of cases to read.
   static Future initUserTimeline({String userId, int length = 100}) {
     return Future.wait([
-      FirestoreCollection.listen("user/[UID]/follow"),
+      FirestoreCollection.listen("user/[UID]/follow?checkAt=$userId",
+          query: FirestoreQuery.equalTo("uid", userId)),
       FirestoreDocument.listen("user/[UID]/like/$userId"),
       FirestoreDocument.listen("user/$userId"),
-      FirestoreCollection.listen("user/$userId/follow"),
-      FirestoreCollection.listen("user/$userId/follower"),
       FirestoreCollection.listen("timeline?user=$userId",
           query: FirestoreQuery.equalTo("user", userId.applyTags())
               .orderByDesc("postTime")
@@ -273,7 +290,7 @@ class SNSUtility {
       int length = 100,
       String userPrefix = "user_"}) async {
     final follow =
-        await FirestoreCollection.listen("user/$userId/follow").joinAt(
+        await FirestoreCollection.listen("user/$userId/follow?all").joinAt(
             key: "uid",
             builder: (col) {
               return FirestoreCollection.listen("user?${key}Joinedby",
@@ -300,7 +317,7 @@ class SNSUtility {
           return additional.uid == original.uid;
         },
         builder: (collection) {
-          return FirestoreCollection.listen("user/$userId/like",
+          return FirestoreCollection.listen("user/$userId/like?joinedBy=$key",
               query:
                   FirestoreQuery.inArray("uid", collection.map((e) => e.uid)));
         },
