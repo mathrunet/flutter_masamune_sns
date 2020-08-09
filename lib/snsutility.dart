@@ -137,8 +137,7 @@ class SNSUtility {
   /// [context]: Build Context.
   /// [userId]: ID of the user to read.
   static IDataCollection readFollow(BuildContext context, {String userId}) {
-    return context
-        .watch<IDataCollection>("joined/user/$userId/follow");
+    return context.watch<IDataCollection>("joined/user/$userId/follow");
   }
 
   /// Button widget to load the next data of the following user.
@@ -174,8 +173,7 @@ class SNSUtility {
   /// [context]: Build Context.
   /// [userId]: ID of the user to read.
   static IDataCollection readFollower(BuildContext context, {String userId}) {
-    return context
-        .watch<IDataCollection>("joined/user/$userId/follower");
+    return context.watch<IDataCollection>("joined/user/$userId/follower");
   }
 
   /// Button widget to load the next data of the follower user.

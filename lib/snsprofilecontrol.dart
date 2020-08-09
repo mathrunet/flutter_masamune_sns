@@ -32,12 +32,12 @@ class SNSProfileControl extends StatelessWidget {
   /// Process when unfollowing.
   final VoidAction onUnfollow;
 
-  /// For debugging. True to treat as your own ID.
-  final bool debugIsMyID;
+  /// Forces edit mode.
+  final bool forceEditControl;
 
   /// Control widget for social media profiles.
   SNSProfileControl(
-      {@required this.userId,
+      {this.userId,
       this.profileEditLabel = "Edit Profile",
       this.onProfileEdit,
       this.onLike,
@@ -47,14 +47,14 @@ class SNSProfileControl extends StatelessWidget {
       this.unfollowLabel = "Unfollow",
       this.onFollow,
       this.onUnfollow,
-      this.debugIsMyID = false});
+      this.forceEditControl = false});
 
   /// Build method.
   ///
   /// [BuildContext]: Build Context.
   @override
   Widget build(BuildContext context) {
-    if (this.debugIsMyID || SNSUtility.isMyID(this.userId)) {
+    if (this.forceEditControl || SNSUtility.isMyID(this.userId)) {
       return Container(
           constraints: BoxConstraints.expand(height: 50),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
