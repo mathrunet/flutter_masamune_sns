@@ -86,7 +86,7 @@ class SNSChatMessageText extends StatelessWidget {
               Container(
                   width: 50,
                   child: Padding(
-                      padding: const EdgeInsets.only(right: 10),
+                      padding: const EdgeInsets.only(left: 10),
                       child: CircleAvatar(
                           backgroundColor: context.theme.canvasColor,
                           backgroundImage: this.avatar))),

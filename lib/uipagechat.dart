@@ -12,7 +12,7 @@ abstract class UIPageChat extends UIPageScaffold
   @mustCallSuper
   void onLoad(BuildContext context) {
     super.onLoad(context);
-    this.init(initial: {"text": Const.empty});
+    this.init({"text": Const.empty});
   }
 
   /// What happens when a message is posted.

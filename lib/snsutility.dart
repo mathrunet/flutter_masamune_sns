@@ -336,4 +336,31 @@ class SNSUtility {
         prefix: userPrefix,
       );
   }
+
+  /// Gets the callback used for onItemFound of SearchBar.
+  static Widget Function(BuildContext, IDataDocument<IDataField>, int)
+      onSearchItemFound(
+          {ImageProvider image,
+          @required Function onTap,
+          String nameKey = "name",
+          String photoKey = "photo",
+          String uidKey = "uid"}) {
+    return (context, data, index) {
+      if (SNSUtility.isMyID(data.getString(uidKey))) return Container();
+      return ListTile(
+          onTap: onTap,
+          leading: image != null
+              ? Container(
+                  width: 40,
+                  height: 40,
+                  child: CircleAvatar(
+                    backgroundColor: context.theme.canvasColor,
+                    backgroundImage: isNotEmpty(data.getString(photoKey))
+                        ? NetworkImage(data.getString(photoKey))
+                        : image,
+                  ))
+              : null,
+          title: Text(data.getString(nameKey)));
+    };
+  }
 }

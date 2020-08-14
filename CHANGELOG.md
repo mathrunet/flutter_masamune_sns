@@ -1,3 +1,7 @@
+## [0.4.2] - Update README (2020.08.13)
+
+* Changed the specifications of SNSProfileHeader.
+
 ## [0.4.1] - Update README (2020.08.07)
 
 * Added widgets for chats and events.

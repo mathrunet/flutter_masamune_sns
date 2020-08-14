@@ -15,7 +15,7 @@ class SNSEventCard extends StatelessWidget {
   final DateFormat dateFormat;
 
   /// Date data.
-  final DateTime date;
+  final DateTime dateTime;
 
   /// Overview.
   final String text;
@@ -35,10 +35,10 @@ class SNSEventCard extends StatelessWidget {
   SNSEventCard(
       {this.image,
       this.elevation = 8.0,
-      this.imageHeight,
+      this.imageHeight = 100,
       @required this.title,
       this.dateFormat,
-      this.date,
+      this.dateTime,
       this.text})
       : assert(isNotEmpty(title));
 
@@ -58,10 +58,10 @@ class SNSEventCard extends StatelessWidget {
                   child: Image(image: this.image, fit: BoxFit.cover)),
             ListTile(
               title: Text(this.title ?? Const.empty),
-              trailing: this.date != null
+              trailing: this.dateTime != null
                   ? Text(
                       (this.dateFormat ?? DateFormat("yyyy/MM/dd(E)\nHH:mm"))
-                          .format(this.date),
+                          .format(this.dateTime),
                       style: TextStyle(
                           color: context.theme.disabledColor, fontSize: 10),
                       textAlign: TextAlign.right)

@@ -2,18 +2,6 @@ part of masamune.sns;
 
 /// SNS profile header.
 class SNSProfileHeader extends StatelessWidget {
-  /// Process when tapping follow.
-  final VoidAction onTapFollow;
-
-  /// Processing when a follower is tapped.
-  final VoidAction onTapFollower;
-
-  /// Builder to get follow count.
-  final int Function(BuildContext context) followCountBuilder;
-
-  /// Builder to get follower count.
-  final int Function(BuildContext context) followerCountBuilder;
-
   /// Builder for getting images.
   final ImageProvider Function(BuildContext context) imageBuilder;
 
@@ -23,26 +11,18 @@ class SNSProfileHeader extends StatelessWidget {
   /// Builder for getting text.
   final String Function(BuildContext context) textBuilder;
 
-  /// Follow text.
-  final String followText;
-
-  /// Follower text.
-  final String followerText;
-
   /// Name postfix.
   final String namePostfix;
+
+  /// Header item.
+  final List<SNSProfileHeaderItem> items;
 
   /// SNS profile header.
   SNSProfileHeader(
       {this.imageBuilder,
-      this.onTapFollow,
-      this.onTapFollower,
-      this.followCountBuilder,
-      this.followerCountBuilder,
+      this.items,
       @required this.nameBuilder,
       @required this.textBuilder,
-      this.followText = "Follow",
-      this.followerText = "Follower",
       this.namePostfix = ""})
       : assert(nameBuilder != null),
         assert(textBuilder != null);
@@ -71,56 +51,32 @@ class SNSProfileHeader extends StatelessWidget {
                             child: CircleAvatar(
                                 backgroundColor: context.theme.canvasColor,
                                 backgroundImage: this.imageBuilder(context))))),
-                if (followerCountBuilder != null &&
-                    isNotEmpty(this.followerText))
-                  Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                          onTap: () {
-                            if (this.onTapFollower != null)
-                              this.onTapFollower();
-                          },
-                          child: Container(
-                              height: 100,
-                              color: context.theme.backgroundColor,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  UIText((context) {
-                                    if (this.followerCountBuilder == null)
-                                      return "0";
-                                    return this
-                                            .followerCountBuilder(context)
-                                            ?.toString() ??
-                                        "0";
-                                  }, style: context.theme.textTheme.headline6),
-                                  Text(this.followerText.localize())
-                                ],
-                              )))),
-                if (followCountBuilder != null && isNotEmpty(this.followText))
-                  Expanded(
-                      flex: 1,
-                      child: GestureDetector(
-                          onTap: () {
-                            if (this.onTapFollow != null) this.onTapFollow();
-                          },
-                          child: Container(
-                              height: 100,
-                              color: context.theme.backgroundColor,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  UIText((context) {
-                                    if (this.followCountBuilder == null)
-                                      return "0";
-                                    return this
-                                            .followCountBuilder(context)
-                                            ?.toString() ??
-                                        "0";
-                                  }, style: context.theme.textTheme.headline6),
-                                  Text(this.followText.localize())
-                                ],
-                              ))))
+                if (this.items != null)
+                  for (SNSProfileHeaderItem item in this.items)
+                    Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                            onTap: () {
+                              if (item.onTap != null) item.onTap();
+                            },
+                            child: Container(
+                                height: 100,
+                                color: context.theme.backgroundColor,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    UIText((context) {
+                                      if (item.countBuilder == null) return "0";
+                                      return item
+                                              .countBuilder(context)
+                                              ?.toString() ??
+                                          "0";
+                                    },
+                                        style:
+                                            context.theme.textTheme.headline6),
+                                    Text(item.title?.localize())
+                                  ],
+                                )))),
               ],
             )),
         Container(
@@ -132,4 +88,22 @@ class SNSProfileHeader extends StatelessWidget {
       ],
     );
   }
+}
+
+/// Item for header.
+class SNSProfileHeaderItem {
+  /// Processing when tapped.
+  final Function onTap;
+
+  /// Title.
+  final String title;
+
+  /// Counter builder.
+  final int Function(BuildContext context) countBuilder;
+
+  /// Item for header.
+  const SNSProfileHeaderItem(
+      {@required this.onTap,
+      @required this.title,
+      @required this.countBuilder});
 }
