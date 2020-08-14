@@ -55,7 +55,7 @@ class SNSProfileHeader extends StatelessWidget {
                   for (SNSProfileHeaderItem item in this.items)
                     Expanded(
                         flex: 1,
-                        child: GestureDetector(
+                        child: InkWell(
                             onTap: () {
                               if (item.onTap != null) item.onTap();
                             },
