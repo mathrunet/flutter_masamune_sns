@@ -32,6 +32,8 @@ class SNSProfileHeader extends StatelessWidget {
   /// [BuildContext]: Build Context.
   @override
   Widget build(BuildContext context) {
+    String name = this.nameBuilder(context);
+    String text = this.textBuilder(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -79,12 +81,12 @@ class SNSProfileHeader extends StatelessWidget {
                                 )))),
               ],
             )),
-        Container(
-            padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 5, bottom: 20),
-            child: UIText(
-                (context) => "${this.nameBuilder(context)} $namePostfix\n"
-                    "${this.textBuilder(context)}")),
+        if (isNotEmpty(name) || isNotEmpty(text))
+          Container(
+              padding: const EdgeInsets.only(
+                  left: 10, right: 10, top: 5, bottom: 20),
+              child: UIText((context) => "$name $namePostfix\n"
+                  "$text")),
       ],
     );
   }
