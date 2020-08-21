@@ -13,6 +13,7 @@ import 'package:flutter/widgets.dart';
 import 'package:masamune_firebase/masamune_firebase.dart';
 import 'package:masamune_flutter/masamune_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:masamune_list/masamune_list.dart';
 
 export 'package:masamune_flutter/masamune_flutter.dart';
 export 'package:masamune_firebase/masamune_firebase.dart';
