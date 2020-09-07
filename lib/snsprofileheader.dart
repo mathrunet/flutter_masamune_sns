@@ -17,12 +17,16 @@ class SNSProfileHeader extends StatelessWidget {
   /// Header item.
   final List<SNSProfileHeaderItem> items;
 
+  /// Image size.
+  final double imageSize;
+
   /// SNS profile header.
   SNSProfileHeader(
       {this.imageBuilder,
       this.items,
       @required this.nameBuilder,
       @required this.textBuilder,
+      this.imageSize = 100,
       this.namePostfix = ""})
       : assert(nameBuilder != null),
         assert(textBuilder != null);
@@ -48,8 +52,8 @@ class SNSProfileHeader extends StatelessWidget {
                     flex: 1,
                     child: UIScope(
                         child: (context) => Container(
-                            width: 100,
-                            height: 100,
+                            width: this.imageSize,
+                            height: this.imageSize,
                             child: CircleAvatar(
                                 backgroundColor: context.theme.canvasColor,
                                 backgroundImage: this.imageBuilder(context))))),
