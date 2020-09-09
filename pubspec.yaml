@@ -1,7 +1,7 @@
 name: masamune_sns
 description: >-
   Plugin for implementing the functions of SNS.
-version: 0.4.2+4
+version: 0.4.2+7
 homepage: https://mathru.net
 repository: https://github.com/mathrunet/flutter_masamune_sns
 

@@ -132,6 +132,50 @@ class SNSUtility {
     ]);
   }
 
+  /// Entry the data ([entryId]) is placed in [target] by [userId].
+  ///
+  /// Various IDs can use PathTag format.
+  ///
+  /// [userId]: The user to entry.
+  /// [entryId]: ID to be entry.
+  /// [target]: Data path where [entryId] is stored.
+  static Future entry(String userId, String entryId,
+      [String target = "event"]) async {
+    if (isEmpty(entryId) || isEmpty(userId) || isEmpty(target)) return;
+    entryId = entryId.applyTags();
+    userId = userId.applyTags();
+    target = target.applyTags();
+    final user = FirestoreDocument.create("user/$userId/entry/$entryId");
+    FirestoreDocument entry =
+        FirestoreDocument.create("$target/$entryId/entry/$userId");
+
+    return Future.wait([
+      user.save(),
+      entry.save(),
+      _increment("$target/$entryId/entryCount", 1)
+    ]);
+  }
+
+  /// Exit the data ([exitId]) is placed in [target] by [userId].
+  ///
+  /// Various IDs can use PathTag format.
+  ///
+  /// [userId]: The user to exit.
+  /// [exitId]: ID to be exit.
+  /// [target]: Data path where [exitId] is stored.
+  static Future exit(String userId, String exitId,
+      [String target = "event"]) async {
+    if (isEmpty(exitId) || isEmpty(userId) || isEmpty(target)) return;
+    exitId = exitId.applyTags();
+    userId = userId.applyTags();
+    target = target.applyTags();
+    return Future.wait([
+      FirestoreDocument.deleteAt("user/$userId/entry/$exitId"),
+      FirestoreDocument.deleteAt("$target/$exitId/entry/$userId"),
+      _increment("$target/$exitId/entryCount", -1)
+    ]);
+  }
+
   /// Gets the user collection that the user is following.
   ///
   /// [context]: Build Context.
@@ -355,9 +399,8 @@ class SNSUtility {
                   height: 40,
                   child: CircleAvatar(
                     backgroundColor: context.theme.canvasColor,
-                    backgroundImage: isNotEmpty(data.getString(photoKey))
-                        ? NetworkImage(data.getString(photoKey))
-                        : image,
+                    backgroundImage:
+                        NetworkOrAsset.image(data.getString(photoKey)),
                   ))
               : null,
           title: Text(data.getString(nameKey)));

@@ -18,7 +18,8 @@ abstract class UIPageChat extends UIPageScaffold
   /// What happens when a message is posted.
   ///
   /// [context]: Build context.
-  void onPost(BuildContext context);
+  /// [value]: Text value.
+  void onPost(BuildContext context, String value);
 
   /// Message list.
   ///
@@ -69,7 +70,8 @@ abstract class UIPageChat extends UIPageScaffold
                       top: 0,
                       bottom: 0,
                       child: IconButton(
-                          onPressed: () => this.onPost(context),
+                          onPressed: () => this
+                              .onPost(context, this.controllers["text"]?.text),
                           padding: const EdgeInsets.only(bottom: 0),
                           visualDensity: VisualDensity.compact,
                           icon: Icon(
