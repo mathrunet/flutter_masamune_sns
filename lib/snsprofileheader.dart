@@ -55,7 +55,7 @@ class SNSProfileHeader extends StatelessWidget {
                             width: this.imageSize,
                             height: this.imageSize,
                             child: CircleAvatar(
-                                backgroundColor: context.theme.canvasColor,
+                                backgroundColor: context.theme.disabledColor,
                                 backgroundImage: this.imageBuilder(context))))),
                 if (this.items != null)
                   for (SNSProfileHeaderItem item in this.items)

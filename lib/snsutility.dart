@@ -132,6 +132,27 @@ class SNSUtility {
     ]);
   }
 
+  /// Check if [userId] is liked [likeId].
+  ///
+  /// True if you are liked.
+  ///
+  /// It will be rebuilt if the data state changes.
+  ///
+  /// Various IDs can use PathTag format.
+  ///
+  /// [context]: BuildContext.
+  /// [userId]: ID of the person to like.
+  /// [likeId]: ID of the person being like.
+  static bool isLike(BuildContext context, String userId, String likeId) {
+    if (context == null || isEmpty(likeId) || isEmpty(userId)) return false;
+    likeId = likeId.applyTags();
+    userId = userId.applyTags();
+    return context
+            .watch<IDataCollection>("user/$userId/like")
+            ?.any((element) => element.uid == likeId) ??
+        false;
+  }
+
   /// Entry the data ([entryId]) is placed in [target] by [userId].
   ///
   /// Various IDs can use PathTag format.
@@ -174,6 +195,27 @@ class SNSUtility {
       FirestoreDocument.deleteAt("$target/$exitId/entry/$userId"),
       _increment("$target/$exitId/entryCount", -1)
     ]);
+  }
+
+  /// Check if [userId] is entry to [entryId].
+  ///
+  /// True if you are entried.
+  ///
+  /// It will be rebuilt if the data state changes.
+  ///
+  /// Various IDs can use PathTag format.
+  ///
+  /// [context]: BuildContext.
+  /// [userId]: ID of the person to entry.
+  /// [entryId]: ID of the person being entry.
+  static bool isEntry(BuildContext context, String userId, String entryId) {
+    if (context == null || isEmpty(entryId) || isEmpty(userId)) return false;
+    entryId = entryId.applyTags();
+    userId = userId.applyTags();
+    return context
+            .watch<IDataCollection>("user/$userId/entry")
+            ?.any((element) => element.uid == entryId) ??
+        false;
   }
 
   /// Gets the user collection that the user is following.
@@ -398,7 +440,7 @@ class SNSUtility {
                   width: 40,
                   height: 40,
                   child: CircleAvatar(
-                    backgroundColor: context.theme.canvasColor,
+                    backgroundColor: context.theme.disabledColor,
                     backgroundImage:
                         NetworkOrAsset.image(data.getString(photoKey)),
                   ))

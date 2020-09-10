@@ -75,7 +75,8 @@ class SNSTimelineListTile extends StatelessWidget {
                                   width: 35,
                                   height: 35,
                                   child: CircleAvatar(
-                                    backgroundColor: context.theme.canvasColor,
+                                    backgroundColor:
+                                        context.theme.disabledColor,
                                     backgroundImage: this.avatar,
                                   ))
                               : null,
