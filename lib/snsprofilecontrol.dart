@@ -35,6 +35,9 @@ class SNSProfileControl extends StatelessWidget {
   /// Forces edit mode.
   final bool forceEditControl;
 
+  /// Like label.
+  final String likeLabel;
+
   /// Control widget for social media profiles.
   SNSProfileControl(
       {this.userId,
@@ -46,6 +49,7 @@ class SNSProfileControl extends StatelessWidget {
       this.followLabel = "Follow",
       this.unfollowLabel = "Unfollow",
       this.onFollow,
+      this.likeLabel,
       this.onUnfollow,
       this.forceEditControl = false});
 
@@ -58,17 +62,38 @@ class SNSProfileControl extends StatelessWidget {
       return Container(
           constraints: BoxConstraints.expand(height: 50),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-          child: FlatButton.icon(
-              shape: RoundedRectangleBorder(
-                  side: BorderSide(
-                      color: context.theme.textTheme.bodyText1.color),
-                  borderRadius: BorderRadius.circular(8.0)),
-              icon: const Icon(Icons.edit),
-              label: Text(
-                this.profileEditLabel.localize(),
-                style: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: this.onProfileEdit));
+          child: Row(children: [
+            if (this.likeIcon != null)
+              (isEmpty(this.likeLabel)
+                  ? IconButton(
+                      visualDensity: VisualDensity.standard,
+                      icon: Icon(this.likeIcon,
+                          size: 26, color: context.theme.primaryColor),
+                      onPressed: null)
+                  : FlatButton.icon(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      padding: const EdgeInsets.all(0),
+                      onPressed: null,
+                      icon: Icon(this.likeIcon,
+                          size: 26, color: context.theme.primaryColor),
+                      label: Text(
+                        this.likeLabel,
+                        style: TextStyle(
+                            color: context.theme.primaryColor, fontSize: 22),
+                      ))),
+            Expanded(
+                child: FlatButton.icon(
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            color: context.theme.textTheme.bodyText1.color),
+                        borderRadius: BorderRadius.circular(8.0)),
+                    icon: const Icon(Icons.edit),
+                    label: Text(
+                      this.profileEditLabel.localize(),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: this.onProfileEdit))
+          ]));
     } else {
       return Container(
           alignment: Alignment.centerRight,
@@ -77,11 +102,25 @@ class SNSProfileControl extends StatelessWidget {
             Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                 child: this.likeIcon != null
-                    ? IconButton(
-                        visualDensity: VisualDensity.standard,
-                        icon: Icon(this.likeIcon,
-                            size: 32, color: context.theme.primaryColor),
-                        onPressed: this.onLike)
+                    ? (isEmpty(this.likeLabel)
+                        ? IconButton(
+                            visualDensity: VisualDensity.standard,
+                            icon: Icon(this.likeIcon,
+                                size: 26, color: context.theme.primaryColor),
+                            onPressed: this.onLike)
+                        : FlatButton.icon(
+                            materialTapTargetSize:
+                                MaterialTapTargetSize.shrinkWrap,
+                            padding: const EdgeInsets.all(0),
+                            onPressed: this.onLike,
+                            icon: Icon(this.likeIcon,
+                                size: 26, color: context.theme.primaryColor),
+                            label: Text(
+                              this.likeLabel,
+                              style: TextStyle(
+                                  color: context.theme.primaryColor,
+                                  fontSize: 22),
+                            )))
                     : Container()),
             Padding(
                 padding:

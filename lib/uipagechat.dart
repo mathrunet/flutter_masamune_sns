@@ -52,6 +52,10 @@ abstract class UIPageChat extends UIPageScaffold
                       minLines: 1,
                       textAlignVertical: TextAlignVertical.top,
                       textAlign: TextAlign.start,
+                      onFieldSubmitted: (value) {
+                        if (isEmpty(value)) return;
+                        this.onPost(context, value);
+                      },
                       decoration: InputDecoration(
                         isDense: true,
                         contentPadding:

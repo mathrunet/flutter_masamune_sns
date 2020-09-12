@@ -307,6 +307,7 @@ class SNSUtility {
   /// [label]: Button label.
   static LoadNext loadNextFollower(
       {@required String userId, @required String label}) {
+    userId = userId?.applyTags();
     return LoadNext(
       path: "user/$userId/follower?user=$userId",
       label: label,
@@ -347,6 +348,128 @@ class SNSUtility {
             value["follow"] = false;
           },
         );
+  }
+
+  /// User collection of entries.
+  ///
+  /// [context]: Build Context.
+  /// [userId]: ID of the user to read.
+  /// [target]: Target id.
+  /// [entry]: True if you are the one entering the event.
+  /// False if you are the event creator.
+  static IDataCollection readEntry(BuildContext context,
+      {@required String userId, String target = "event", bool entry = false}) {
+    userId = userId?.applyTags();
+    if (entry) {
+      return context.watch<IDataCollection>("joined/user/$userId/entry");
+    } else {
+      return context.watch<IDataCollection>("$target?user=$userId");
+    }
+  }
+
+  /// Button widget to load the next data of the entried user.
+  ///
+  /// [userId]: ID of the user to read.
+  /// [label]: Button label.
+  /// [target]: Target id.
+  /// [entry]: True if you are the one entering the event.
+  /// False if you are the event creator.
+  static LoadNext loadNextEntry(
+      {@required String userId,
+      @required String label,
+      String target = "event",
+      bool entry = false}) {
+    userId = userId?.applyTags();
+    if (entry) {
+      return LoadNext(
+        path: "joined/user/$userId/entry",
+        label: label,
+      );
+    } else {
+      return LoadNext(
+        path: "$target?user=$userId",
+        label: label,
+      );
+    }
+  }
+
+  /// Loader for getting entries.
+  ///
+  /// [userId]: ID of the user to read.
+  /// [length]: Number of cases to read.
+  /// [target]: Target id.
+  static Future<List<IDataCollection>> initEntry(
+      {@required String userId, int length = 100, String target = "event"}) {
+    userId = userId?.applyTags();
+    return Future.wait<IDataCollection>([
+      FirestoreCollection.listen("$target?user=$userId",
+          orderBy: OrderBy.desc,
+          orderByKey: "date",
+          query: FirestoreQuery.equalTo("user", userId).orderByDesc("date")),
+      FirestoreCollection.listen("user/$userId/entry",
+              orderBy: OrderBy.desc, orderByKey: "time")
+          .joinAt(
+              key: "uid",
+              builder: (col) {
+                return FirestoreCollection.listen(
+                    "$target?${target}Joinedby=$userId",
+                    query: col.length <= 0
+                        ? FirestoreQuery.empty()
+                        : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
+              })
+    ]);
+  }
+
+  /// Event collection of entries.
+  ///
+  /// [context]: Build Context.
+  /// [eventId]: ID of the event to read.
+  /// [target]: Target id.
+  static IDataCollection readEventEntry(BuildContext context,
+      {@required String eventId, String target = "event"}) {
+    eventId = eventId?.applyTags();
+    return context.watch<IDataCollection>("joined/$target/$eventId/entry");
+  }
+
+  /// Button widget to load the next data of the entried event.
+  ///
+  /// [eventId]: ID of the event to read.
+  /// [label]: Button label.
+  /// [target]: Target id.
+  static LoadNext loadNextEventEntry(
+      {@required String eventId,
+      @required String label,
+      String target = "event"}) {
+    eventId = eventId?.applyTags();
+    return LoadNext(
+      path: "joined/$target/$eventId/entry",
+      label: label,
+    );
+  }
+
+  /// Loader for getting entries.
+  ///
+  /// [eventId]: ID of the event to read.
+  /// [length]: Number of cases to read.
+  /// [target]: Target id.
+  static Future<List<IPath>> initEvent(
+      {@required String eventId, int length = 100, String target = "event"}) {
+    eventId = eventId?.applyTags();
+    return Future.wait<IPath>([
+      FirestoreDocument.listen("$target/$eventId").joinAt(
+          prefix: "user",
+          builder: (doc) {
+            return FirestoreDocument.listen("user/${doc.getString("user")}");
+          }),
+      FirestoreCollection.listen("$target/$eventId/entry").joinAt(
+          key: "uid",
+          builder: (col) {
+            return FirestoreCollection.listen("user?${target}Joinedby=$eventId",
+                query: col.length <= 0
+                    ? FirestoreQuery.empty()
+                    : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
+          })
+    ]);
   }
 
   /// Timeline collection to use for each user's timeline (profile, etc.).
