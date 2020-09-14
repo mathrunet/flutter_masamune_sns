@@ -60,7 +60,9 @@ class SNSChatMessageText extends StatelessWidget {
             Expanded(
                 flex: 5,
                 child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
+                    crossAxisAlignment: this.mine
+                        ? CrossAxisAlignment.end
+                        : CrossAxisAlignment.start,
                     children: [
                       Container(
                         padding: const EdgeInsets.all(10),
