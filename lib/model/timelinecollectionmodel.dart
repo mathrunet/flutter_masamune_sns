@@ -1,10 +1,10 @@
 part of masamune.sns;
 
-class TimelineCollection extends CollectionModel {
+class TimelineCollectionModel extends CollectionModel {
   final String userId;
   final String target;
   final int limit;
-  TimelineCollection(
+  TimelineCollectionModel(
       {String userId, String target = "timeline", this.limit = 100})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),

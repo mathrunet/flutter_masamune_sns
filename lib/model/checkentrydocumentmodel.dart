@@ -1,9 +1,9 @@
 part of masamune.sns;
 
-class CheckEntryDocument extends DocumentModel {
+class CheckEntryDocumentModel extends DocumentModel {
   final String entryId;
   final String userId;
-  CheckEntryDocument({String userId, String entryId})
+  CheckEntryDocumentModel({String userId, String entryId})
       : this.entryId = entryId?.applyTags(),
         this.userId = userId?.applyTags(),
         super();
@@ -12,8 +12,10 @@ class CheckEntryDocument extends DocumentModel {
     return FirestoreDocument.listen("user/$userId/entry/$entryId");
   }
 
-  bool isEntried(BuildContext context) {
-    if (context == null || isEmpty(entryId)) return false;
-    return context.watch<String>("${this.context.path}/uid") == entryId;
+  bool get isEntried {
+    if (isEmpty(entryId)) return false;
+    final state = this.state;
+    if (state == null) return false;
+    return state.uid == entryId;
   }
 }

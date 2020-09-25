@@ -1,23 +1,23 @@
 part of masamune.sns;
 
-class LikedCollection extends CollectionModel {
+class EntriedCollectionModel extends CollectionModel {
   final int limit;
-  final String likeId;
+  final String entryId;
   final String target;
-  LikedCollection({String likeId, this.limit = 100, String target = "user"})
-      : this.likeId = likeId?.applyTags(),
+  EntriedCollectionModel(
+      {String entryId, this.limit = 100, String target = "event"})
+      : this.entryId = entryId?.applyTags(),
         this.target = target?.applyTags(),
         super();
 
   @override
   FutureOr<IDataCollection> build(ModelContext context) {
-    String likeId = this.likeId?.applyTags();
-    return FirestoreCollection.listen("$target/$likeId/liked",
+    return FirestoreCollection.listen("$target/$entryId/entry",
             query: FirestoreQuery.orderByDesc("time").limitAt(this.limit))
         .joinAt(
             key: "uid",
             builder: (col) {
-              return FirestoreCollection.listen("user?likeJoinedby=$likeId",
+              return FirestoreCollection.listen("user?entryJoinedby=$entryId",
                   query: col.length <= 0
                       ? FirestoreQuery.empty()
                       : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
@@ -26,7 +26,7 @@ class LikedCollection extends CollectionModel {
 
   Widget loadNext(String label) {
     return LoadNext(
-      path: "$target/$likeId/liked",
+      path: "$target/$entryId/entry",
       label: label?.localize(),
     );
   }

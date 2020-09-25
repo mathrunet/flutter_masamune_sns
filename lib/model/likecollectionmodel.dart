@@ -1,10 +1,10 @@
 part of masamune.sns;
 
-class LikeCollection extends CollectionModel {
+class LikeCollectionModel extends CollectionModel {
   final int limit;
   final String userId;
   final String target;
-  LikeCollection({String userId, this.limit = 100, String target = "user"})
+  LikeCollectionModel({String userId, this.limit = 100, String target = "user"})
       : this.userId = userId.applyTags(),
         this.target = target.applyTags(),
         super();

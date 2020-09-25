@@ -1,9 +1,9 @@
 part of masamune.sns;
 
-class FollowerCollection extends CollectionModel {
+class FollowerCollectionModel extends CollectionModel {
   final int limit;
   final String userId;
-  FollowerCollection({String userId, this.limit = 100})
+  FollowerCollectionModel({String userId, this.limit = 100})
       : this.userId = userId?.applyTags(),
         super();
 

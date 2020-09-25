@@ -1,10 +1,11 @@
 part of masamune.sns;
 
-class EntryCollection extends CollectionModel {
+class EntryCollectionModel extends CollectionModel {
   final int limit;
   final String userId;
   final String target;
-  EntryCollection({String userId, this.limit = 100, String target = "event"})
+  EntryCollectionModel(
+      {String userId, this.limit = 100, String target = "event"})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
         super();

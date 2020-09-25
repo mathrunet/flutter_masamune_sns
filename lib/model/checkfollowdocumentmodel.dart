@@ -1,9 +1,9 @@
 part of masamune.sns;
 
-class CheckFollowDocument extends DocumentModel {
+class CheckFollowDocumentModel extends DocumentModel {
   final String followId;
   final String userId;
-  CheckFollowDocument({String userId, String followId})
+  CheckFollowDocumentModel({String userId, String followId})
       : this.followId = followId?.applyTags(),
         this.userId = userId?.applyTags(),
         super();
@@ -13,8 +13,10 @@ class CheckFollowDocument extends DocumentModel {
     return FirestoreDocument.listen("user/$userId/follow/$followId");
   }
 
-  bool isFolllow(BuildContext context) {
-    if (context == null || isEmpty(followId) || isEmpty(userId)) return false;
-    return context.watch<String>("${this.context.path}/uid") == followId;
+  bool get isFolllow {
+    if (isEmpty(followId) || isEmpty(userId)) return false;
+    final state = this.state;
+    if (state == null) return false;
+    return state.uid == followId;
   }
 }

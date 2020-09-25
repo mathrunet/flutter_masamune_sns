@@ -1,10 +1,11 @@
 part of masamune.sns;
 
-class UserFilteredDocument extends DocumentModel {
+class UserFilteredDocumentModel extends DocumentModel {
   final String target;
   final String eventId;
   final String prefix;
-  UserFilteredDocument({String target, String eventId, this.prefix = "user"})
+  UserFilteredDocumentModel(
+      {String target, String eventId, this.prefix = "user"})
       : this.target = target?.applyTags(),
         this.eventId = eventId?.applyTags(),
         super();

@@ -1,12 +1,12 @@
 part of masamune.sns;
 
-class UserFilteredCollection extends CollectionModel {
+class UserFilteredCollectionModel extends CollectionModel {
   final String target;
   final String userId;
   final OrderBy orderBy;
   final String orderByKey;
   final int limit;
-  UserFilteredCollection(
+  UserFilteredCollectionModel(
       {String target,
       String userId,
       this.limit = 100,

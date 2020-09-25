@@ -1,9 +1,9 @@
 part of masamune.sns;
 
-class CheckLikeDocument extends DocumentModel {
+class CheckLikeDocumentModel extends DocumentModel {
   final String likeId;
   final String userId;
-  CheckLikeDocument({String userId, String likeId})
+  CheckLikeDocumentModel({String userId, String likeId})
       : this.likeId = likeId?.applyTags(),
         this.userId = userId?.applyTags(),
         super();
@@ -12,8 +12,10 @@ class CheckLikeDocument extends DocumentModel {
     return FirestoreDocument.listen("user/$userId/like/$likeId");
   }
 
-  bool isLike(BuildContext context) {
-    if (context == null || isEmpty(likeId) || isEmpty(userId)) return false;
-    return context.watch<String>("${this.context.path}/uid") == likeId;
+  bool get isLike {
+    if (isEmpty(likeId) || isEmpty(userId)) return false;
+    final state = this.state;
+    if (state == null) return false;
+    return state.uid == likeId;
   }
 }

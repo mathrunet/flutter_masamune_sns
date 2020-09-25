@@ -1,11 +1,11 @@
 part of masamune.sns;
 
-class HomeTimelineCollection extends CollectionModel {
+class HomeTimelineCollectionModel extends CollectionModel {
   final String userId;
   final String target;
   final int limit;
   final String prefix;
-  HomeTimelineCollection(
+  HomeTimelineCollectionModel(
       {String userId,
       String target = "timeline",
       this.limit = 100,
