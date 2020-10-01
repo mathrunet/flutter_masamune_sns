@@ -1,26 +1,30 @@
 part of masamune.sns;
 
+@immutable
 class LikeCollectionModel extends CollectionModel {
   final int limit;
   final String userId;
   final String target;
-  LikeCollectionModel({String userId, this.limit = 100, String target = "user"})
-      : this.userId = userId.applyTags(),
-        this.target = target.applyTags(),
+  LikeCollectionModel(
+      {@required String userId, this.limit = 100, String target = "user"})
+      : this.userId = userId?.applyTags(),
+        this.target = target?.applyTags(),
         super();
 
   @override
-  FutureOr<IDataCollection> build(ModelContext context) {
-    return FirestoreCollection.listen("user/$userId/like",
-            query: FirestoreQuery.orderByDesc("time").limitAt(this.limit))
-        .joinAt(
-            key: "uid",
-            builder: (col) {
-              return FirestoreCollection.listen("$target?likeJoinedby=$userId",
-                  query: col.length <= 0
-                      ? FirestoreQuery.empty()
-                      : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
-            });
+  Future<IPath> createTask() {
+    return FirestoreCollection.listen(
+      "user/$userId/like",
+      query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
+    ).joinAt(
+      key: "uid",
+      builder: (col) {
+        return FirestoreCollection.listen("$target?likeJoinedby=$userId",
+            query: col.length <= 0
+                ? FirestoreQuery.empty()
+                : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
+      },
+    );
   }
 
   Future like(String likeId) async {
@@ -35,6 +39,11 @@ class LikeCollectionModel extends CollectionModel {
       like.save(),
       SNSUtility._increment("$target/$likeId/likedCount", 1)
     ]);
+  }
+
+  @override
+  Iterable<IDataDocument<IDataField>> build() {
+    return PathMap.get<IDataCollection>("joined/user/$userId/like");
   }
 
   Future unlike(String likeId) async {

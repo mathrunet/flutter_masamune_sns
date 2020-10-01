@@ -1,5 +1,6 @@
 part of masamune.sns;
 
+@immutable
 class UserFilteredCollectionModel extends CollectionModel {
   final String target;
   final String userId;
@@ -7,8 +8,8 @@ class UserFilteredCollectionModel extends CollectionModel {
   final String orderByKey;
   final int limit;
   UserFilteredCollectionModel(
-      {String target,
-      String userId,
+      {@required String target,
+      @required String userId,
       this.limit = 100,
       this.orderBy = OrderBy.desc,
       this.orderByKey = "date"})
@@ -17,17 +18,24 @@ class UserFilteredCollectionModel extends CollectionModel {
         super();
 
   @override
-  FutureOr<IDataCollection> build(ModelContext context) {
-    return FirestoreCollection.listen("$target?filteredBy=$userId",
-        orderBy: this.orderBy,
-        orderByKey: this.orderByKey,
-        query: this.orderBy == OrderBy.desc
-            ? FirestoreQuery.equalTo("user", userId)
-                .orderByDesc(this.orderByKey)
-                .limitAt(this.limit)
-            : FirestoreQuery.equalTo("user", userId)
-                .orderByAsc(this.orderByKey)
-                .limitAt(this.limit));
+  Future<IPath> createTask() {
+    return FirestoreCollection.listen(
+      "$target?filteredBy=$userId",
+      orderBy: this.orderBy,
+      orderByKey: this.orderByKey,
+      query: this.orderBy == OrderBy.desc
+          ? FirestoreQuery.equalTo("user", userId)
+              .orderByDesc(this.orderByKey)
+              .limitAt(this.limit)
+          : FirestoreQuery.equalTo("user", userId)
+              .orderByAsc(this.orderByKey)
+              .limitAt(this.limit),
+    );
+  }
+
+  @override
+  Iterable<IDataDocument<IDataField>> build() {
+    return PathMap.get<IDataCollection>("$target?filteredBy=$userId");
   }
 
   Widget loadNext(String label) {

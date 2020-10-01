@@ -1,27 +1,35 @@
 part of masamune.sns;
 
+@immutable
 class EntryCollectionModel extends CollectionModel {
   final int limit;
   final String userId;
   final String target;
   EntryCollectionModel(
-      {String userId, this.limit = 100, String target = "event"})
+      {@required String userId, this.limit = 100, String target = "event"})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
         super();
 
   @override
-  FutureOr<IDataCollection> build(ModelContext context) {
-    return FirestoreCollection.listen("user/$userId/entry",
-            query: FirestoreQuery.orderByDesc("time").limitAt(this.limit))
-        .joinAt(
-            key: "uid",
-            builder: (col) {
-              return FirestoreCollection.listen("$target?entryJoinedby=$userId",
-                  query: col.length <= 0
-                      ? FirestoreQuery.empty()
-                      : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
-            });
+  Future<IPath> createTask() {
+    return FirestoreCollection.listen(
+      "user/$userId/entry",
+      query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
+    ).joinAt(
+      key: "uid",
+      builder: (col) {
+        return FirestoreCollection.listen("$target?entryJoinedby=$userId",
+            query: col.length <= 0
+                ? FirestoreQuery.empty()
+                : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
+      },
+    );
+  }
+
+  @override
+  Iterable<IDataDocument<IDataField>> build() {
+    return PathMap.get<IDataCollection>("joined/user/$userId/entry");
   }
 
   Future entry(String entryId) async {

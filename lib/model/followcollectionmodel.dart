@@ -1,24 +1,37 @@
 part of masamune.sns;
 
+@immutable
 class FollowCollecionModel extends CollectionModel {
   final int limit;
   final String userId;
-  FollowCollecionModel({String userId, this.limit = 100})
+  FollowCollecionModel({@required String userId, this.limit = 100})
       : this.userId = userId?.applyTags(),
         super();
 
   @override
-  FutureOr<IDataCollection> build(ModelContext context) {
-    return FirestoreCollection.listen("user/$userId/follow",
-            query: FirestoreQuery.orderByDesc("time").limitAt(this.limit))
-        .joinAt(
-            key: "uid",
-            builder: (col) {
-              return FirestoreCollection.listen("user?followJoinedby=$userId",
-                  query: col.length <= 0
-                      ? FirestoreQuery.empty()
-                      : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
-            });
+  Future<IPath> createTask() {
+    return FirestoreCollection.listen(
+      "user/$userId/follow",
+      query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
+    ).joinAt(
+      key: "uid",
+      builder: (col) {
+        return FirestoreCollection.listen(
+          "user?followJoinedby=$userId",
+          query: col.length <= 0
+              ? FirestoreQuery.empty()
+              : FirestoreQuery.inArray(
+                  "uid",
+                  col.map((e) => e.uid),
+                ),
+        );
+      },
+    );
+  }
+
+  @override
+  Iterable<IDataDocument<IDataField>> build() {
+    return PathMap.get<IDataCollection>("joined/user/$userId/follow");
   }
 
   Future follow(String followId) async {
