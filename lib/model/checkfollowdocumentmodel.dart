@@ -10,7 +10,7 @@ class CheckFollowDocumentModel extends DocumentModel {
         super();
 
   @override
-  IDynamicalDataMap build() {
+  IDynamicalDataMap build(ModelContext context) {
     return FirestoreDocumentModel("user/$userId/follow/$followId");
   }
 

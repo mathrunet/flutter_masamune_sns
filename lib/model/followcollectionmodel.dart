@@ -9,7 +9,7 @@ class FollowCollecionModel extends CollectionModel {
         super();
 
   @override
-  Future<IPath> createTask() {
+  Future createTask() {
     return FirestoreCollection.listen(
       "user/$userId/follow",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
@@ -30,7 +30,7 @@ class FollowCollecionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument<IDataField>> build() {
+  Iterable<IDataDocument<IDataField>> build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/user/$userId/follow");
   }
 

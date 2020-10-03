@@ -19,7 +19,7 @@ class HomeTimelineCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future<IPath> createTask() async {
+  Future createTask() async {
     final follow =
         await FirestoreCollection.listen("user/$userId/follow").joinAt(
       key: "uid",
@@ -88,7 +88,7 @@ class HomeTimelineCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument> build() {
+  Iterable<IDataDocument> build(ModelContext context) {
     return PathMap.get<IDataCollection>(
         "joined/$target?homeFilteredBy=$userId");
   }

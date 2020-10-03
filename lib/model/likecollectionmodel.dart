@@ -12,7 +12,7 @@ class LikeCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future<IPath> createTask() {
+  Future createTask() {
     return FirestoreCollection.listen(
       "user/$userId/like",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
@@ -42,7 +42,7 @@ class LikeCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument<IDataField>> build() {
+  Iterable<IDataDocument> build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/user/$userId/like");
   }
 

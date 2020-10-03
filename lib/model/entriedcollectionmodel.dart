@@ -12,7 +12,7 @@ class EntriedCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future<IPath> createTask() {
+  Future createTask() {
     return FirestoreCollection.load(
       "$target/$entryId/entry",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
@@ -29,7 +29,7 @@ class EntriedCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument> build() {
+  Iterable<IDataDocument> build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/$target/$entryId/entry");
   }
 
