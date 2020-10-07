@@ -18,7 +18,7 @@ class UserFilteredCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataCollection> createTask(ModelContext context) {
     return FirestoreCollection.listen(
       "$target?filteredBy=$userId",
       orderBy: this.orderBy,
@@ -34,7 +34,7 @@ class UserFilteredCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument> build(ModelContext context) {
+  IDynamicCollection build(ModelContext context) {
     return PathMap.get<IDataCollection>("$target?filteredBy=$userId");
   }
 

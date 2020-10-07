@@ -12,7 +12,7 @@ class UserFilteredDocumentModel extends DocumentModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataDocument> createTask(ModelContext context) {
     return FirestoreDocument.listen("$target/$eventId").joinAt(
       prefix: this.prefix,
       builder: (doc) {
@@ -22,7 +22,7 @@ class UserFilteredDocumentModel extends DocumentModel {
   }
 
   @override
-  IDynamicalDataMap build(ModelContext context) {
+  IDynamicDocument build(ModelContext context) {
     return PathMap.get<IDataDocument>("$target/$eventId");
   }
 }

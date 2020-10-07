@@ -12,7 +12,7 @@ class TimelineCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataCollection> createTask(ModelContext context) {
     return FirestoreCollection.listen(
       "$target?filteredBy=$userId",
       query: FirestoreQuery.equalTo("user", userId)
@@ -22,7 +22,7 @@ class TimelineCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument> build(ModelContext context) {
+  IDynamicCollection build(ModelContext context) {
     return PathMap.get<IDataCollection>("$target?filteredBy=$userId");
   }
 

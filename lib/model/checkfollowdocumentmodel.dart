@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class CheckFollowDocumentModel extends DocumentModel {
   final String followId;
   final String userId;
@@ -10,7 +9,7 @@ class CheckFollowDocumentModel extends DocumentModel {
         super();
 
   @override
-  IDynamicalDataMap build(ModelContext context) {
+  IDynamicDocument build(ModelContext context) {
     return FirestoreDocumentModel("user/$userId/follow/$followId");
   }
 

@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class EntriedCollectionModel extends CollectionModel {
   final int limit;
   final String entryId;
@@ -12,7 +11,7 @@ class EntriedCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataCollection> createTask(ModelContext context) {
     return FirestoreCollection.load(
       "$target/$entryId/entry",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
@@ -29,7 +28,7 @@ class EntriedCollectionModel extends CollectionModel {
   }
 
   @override
-  Iterable<IDataDocument> build(ModelContext context) {
+  IDynamicCollection build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/$target/$entryId/entry");
   }
 

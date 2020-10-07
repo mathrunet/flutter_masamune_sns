@@ -12,7 +12,7 @@ class LikedCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataCollection> createTask(ModelContext context) {
     String likeId = this.likeId?.applyTags();
     return FirestoreCollection.listen(
       "$target/$likeId/liked",
@@ -28,8 +28,13 @@ class LikedCollectionModel extends CollectionModel {
     );
   }
 
+  void dispose(Function(IDataCollection) rebuild) {
+    PathMap.get<IDataCollection>("joined/$target/$likeId/liked")
+        ?.unlisten(rebuild);
+  }
+
   @override
-  Iterable<IDataDocument> build(ModelContext context) {
+  IDynamicCollection build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/$target/$likeId/liked");
   }
 

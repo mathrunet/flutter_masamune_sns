@@ -18,79 +18,97 @@ class HomeTimelineCollectionModel extends CollectionModel {
         this.sortKey = sortKey?.applyTags(),
         super();
 
+  // @override
+  // Future createTask() async {
+  //   final follow =
+  //       await FirestoreCollection.listen("user/$userId/follow").joinAt(
+  //     key: "uid",
+  //     builder: (col) {
+  //       return FirestoreCollection.listen(
+  //         "user?followJoinedby=$userId",
+  //         query: col.length <= 0
+  //             ? FirestoreQuery.empty()
+  //             : FirestoreQuery.inArray(
+  //                 "uid",
+  //                 col.map((e) => e.uid),
+  //               ),
+  //       );
+  //     },
+  //   );
+  //   return await FirestoreCollection.listen(
+  //     "$target?homeFilteredBy=$userId",
+  //     query: FirestoreQuery.inArray(
+  //             "user", follow.map((e) => e.uid).toList()..add(userId))
+  //         .orderByDesc(this.sortKey)
+  //         .limitAt(this.limit),
+  //   )
+  //       .joinWhere(
+  //         path: "joined/$target?homeFilteredBy=$userId",
+  //         test: (newField, oldField) {
+  //           return oldField.getString("uid") == newField.getString("user");
+  //         },
+  //         builder: (collection) async {
+  //           return follow;
+  //         },
+  //         prefix: this.prefix,
+  //       )
+  //       .joinWhere(
+  //         path: "joined/$target?homeFilteredBy=$userId",
+  //         test: (original, additional) {
+  //           return additional.uid == original.uid;
+  //         },
+  //         builder: (collection) {
+  //           return FirestoreCollection.listen(
+  //             "user/$userId/like?${target}Joined",
+  //             query: collection.length <= 0
+  //                 ? FirestoreQuery.empty()
+  //                 : FirestoreQuery.inArray(
+  //                     "uid",
+  //                     collection.map((e) => e.uid),
+  //                   ),
+  //           );
+  //         },
+  //         onFound: (key, value, document, collection) {
+  //           value["liked"] = true;
+  //         },
+  //         onNotFound: (key, value, collection) {
+  //           value["liked"] = false;
+  //         },
+  //       )
+  //       .joinDocumentWhere(
+  //         path: "joined/$target?homeFilteredBy=$userId",
+  //         test: (newField, oldField) {
+  //           return oldField.getString("uid") == newField.getString("user");
+  //         },
+  //         builder: (collection) async {
+  //           return FirestoreDocument.listen("user/$userId");
+  //         },
+  //         prefix: this.prefix,
+  //       );
+  // }
+  // @override
+  // IDynamicCollection build(ModelContext context) {
+  //   return PathMap.get<IDataCollection>(
+  //       "joined/$target?homeFilteredBy=$userId");
+  // }
+
   @override
-  Future createTask() async {
-    final follow =
-        await FirestoreCollection.listen("user/$userId/follow").joinAt(
-      key: "uid",
-      builder: (col) {
-        return FirestoreCollection.listen(
-          "user?followJoinedby=$userId",
-          query: col.length <= 0
-              ? FirestoreQuery.empty()
-              : FirestoreQuery.inArray(
-                  "uid",
-                  col.map((e) => e.uid),
-                ),
-        );
-      },
-    );
-    return await FirestoreCollection.listen(
+  IDynamicCollection build(ModelContext context) {
+    final follow = FollowCollecionModel(userId: userId);
+    final timeline = FirestoreCollectionModel(
       "$target?homeFilteredBy=$userId",
       query: FirestoreQuery.inArray(
               "user", follow.map((e) => e.uid).toList()..add(userId))
           .orderByDesc(this.sortKey)
           .limitAt(this.limit),
-    )
-        .joinWhere(
-          path: "joined/$target?homeFilteredBy=$userId",
-          test: (newField, oldField) {
-            return oldField.getString("uid") == newField.getString("user");
-          },
-          builder: (collection) async {
-            return follow;
-          },
-          prefix: this.prefix,
-        )
-        .joinWhere(
-          path: "joined/$target?homeFilteredBy=$userId",
-          test: (original, additional) {
-            return additional.uid == original.uid;
-          },
-          builder: (collection) {
-            return FirestoreCollection.listen(
-              "user/$userId/like?${target}Joined",
-              query: collection.length <= 0
-                  ? FirestoreQuery.empty()
-                  : FirestoreQuery.inArray(
-                      "uid",
-                      collection.map((e) => e.uid),
-                    ),
-            );
-          },
-          onFound: (key, value, document, collection) {
-            value["liked"] = true;
-          },
-          onNotFound: (key, value, collection) {
-            value["liked"] = false;
-          },
-        )
-        .joinDocumentWhere(
-          path: "joined/$target?homeFilteredBy=$userId",
-          test: (newField, oldField) {
-            return oldField.getString("uid") == newField.getString("user");
-          },
-          builder: (collection) async {
-            return FirestoreDocument.listen("user/$userId");
-          },
-          prefix: this.prefix,
-        );
-  }
+    );
 
-  @override
-  Iterable<IDataDocument> build(ModelContext context) {
-    return PathMap.get<IDataCollection>(
-        "joined/$target?homeFilteredBy=$userId");
+    return timeline.mergeDocumentWhere(
+      source: FirestoreDocumentModel("user/$userId"),
+      test: (original, additional) =>
+          original.getString("user") == additional.uid,
+      prefix: this.prefix,
+    );
   }
 
   Widget loadNext(String label) {

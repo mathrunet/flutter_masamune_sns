@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class CheckLikeDocumentModel extends DocumentModel {
   final String likeId;
   final String userId;
@@ -9,7 +8,7 @@ class CheckLikeDocumentModel extends DocumentModel {
         this.userId = userId?.applyTags(),
         super();
   @override
-  IDynamicalDataMap build(ModelContext context) {
+  IDynamicDocument build(ModelContext context) {
     return FirestoreDocumentModel("user/$userId/like/$likeId");
   }
 

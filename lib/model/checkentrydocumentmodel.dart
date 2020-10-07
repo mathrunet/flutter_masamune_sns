@@ -8,7 +8,7 @@ class CheckEntryDocumentModel extends DocumentModel {
         this.userId = userId?.applyTags(),
         super();
   @override
-  IDynamicalDataMap build(ModelContext context) {
+  IDynamicDocument build(ModelContext context) {
     return FirestoreDocumentModel("user/$userId/entry/$entryId");
   }
 

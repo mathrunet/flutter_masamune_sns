@@ -12,7 +12,7 @@ class LikeCollectionModel extends CollectionModel {
         super();
 
   @override
-  Future createTask() {
+  Future<IDataCollection> createTask(ModelContext context) {
     return FirestoreCollection.listen(
       "user/$userId/like",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
@@ -41,8 +41,12 @@ class LikeCollectionModel extends CollectionModel {
     ]);
   }
 
+  void dispose(Function(IDataCollection) rebuild) {
+    PathMap.get<IDataCollection>("joined/user/$userId/like")?.unlisten(rebuild);
+  }
+
   @override
-  Iterable<IDataDocument> build(ModelContext context) {
+  IDynamicCollection build(ModelContext context) {
     return PathMap.get<IDataCollection>("joined/user/$userId/like");
   }
 
