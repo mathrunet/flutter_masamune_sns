@@ -1,16 +1,12 @@
 part of masamune.sns;
 
-class CheckLikeDocumentModel extends DocumentModel {
+class CheckLikeDocumentModel extends FirestoreDocumentModel {
   final String likeId;
   final String userId;
   CheckLikeDocumentModel({@required String userId, @required String likeId})
       : this.likeId = likeId?.applyTags(),
         this.userId = userId?.applyTags(),
-        super();
-  @override
-  IDynamicDocument build(ModelContext context) {
-    return FirestoreDocumentModel("user/$userId/like/$likeId");
-  }
+        super("user/$userId/like/$likeId");
 
   bool get isLike {
     if (isEmpty(likeId) || isEmpty(userId)) return false;

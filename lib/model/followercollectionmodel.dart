@@ -6,15 +6,16 @@ class FollowerCollectionModel extends CollectionModel {
   final String userId;
   FollowerCollectionModel({@required String userId, this.limit = 100})
       : this.userId = userId?.applyTags(),
-        super();
+        super("joined/user/$userId/follower");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.listen(
       "user/$userId/follower",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
     )
         .joinAt(
+          path: this.path,
           key: "uid",
           builder: (col) {
             return FirestoreCollection.listen(
@@ -29,6 +30,7 @@ class FollowerCollectionModel extends CollectionModel {
           },
         )
         .joinAt(
+          path: this.path,
           key: "uid",
           builder: (col) {
             return FirestoreCollection.listen(
@@ -44,11 +46,6 @@ class FollowerCollectionModel extends CollectionModel {
             value["follow"] = false;
           },
         );
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("joined/user/$userId/follower");
   }
 
   Widget loadNext(String label) {

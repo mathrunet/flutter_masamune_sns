@@ -9,14 +9,15 @@ class LikeCollectionModel extends CollectionModel {
       {@required String userId, this.limit = 100, String target = "user"})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
-        super();
+        super("joined/user/$userId/like");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.listen(
       "user/$userId/like",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
     ).joinAt(
+      path: this.path,
       key: "uid",
       builder: (col) {
         return FirestoreCollection.listen("$target?likeJoinedby=$userId",
@@ -39,15 +40,6 @@ class LikeCollectionModel extends CollectionModel {
       like.save(),
       SNSUtility._increment("$target/$likeId/likedCount", 1)
     ]);
-  }
-
-  void dispose(Function(IDataCollection) rebuild) {
-    PathMap.get<IDataCollection>("joined/user/$userId/like")?.unlisten(rebuild);
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("joined/user/$userId/like");
   }
 
   Future unlike(String likeId) async {

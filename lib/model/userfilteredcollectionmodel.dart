@@ -15,12 +15,12 @@ class UserFilteredCollectionModel extends CollectionModel {
       this.orderByKey = "date"})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
-        super();
+        super("$target?filteredBy=$userId");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.listen(
-      "$target?filteredBy=$userId",
+      this.path,
       orderBy: this.orderBy,
       orderByKey: this.orderByKey,
       query: this.orderBy == OrderBy.desc
@@ -31,11 +31,6 @@ class UserFilteredCollectionModel extends CollectionModel {
               .orderByAsc(this.orderByKey)
               .limitAt(this.limit),
     );
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("$target?filteredBy=$userId");
   }
 
   Widget loadNext(String label) {

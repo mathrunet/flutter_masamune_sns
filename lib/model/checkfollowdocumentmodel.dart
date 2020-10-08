@@ -1,17 +1,12 @@
 part of masamune.sns;
 
-class CheckFollowDocumentModel extends DocumentModel {
+class CheckFollowDocumentModel extends FirestoreDocumentModel {
   final String followId;
   final String userId;
   CheckFollowDocumentModel({@required String userId, @required String followId})
       : this.followId = followId?.applyTags(),
         this.userId = userId?.applyTags(),
-        super();
-
-  @override
-  IDynamicDocument build(ModelContext context) {
-    return FirestoreDocumentModel("user/$userId/follow/$followId");
-  }
+        super("user/$userId/follow/$followId");
 
   bool get isFolllow {
     if (isEmpty(followId) || isEmpty(userId)) return false;

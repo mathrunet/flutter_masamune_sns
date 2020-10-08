@@ -1,16 +1,12 @@
 part of masamune.sns;
 
-class CheckEntryDocumentModel extends DocumentModel {
+class CheckEntryDocumentModel extends FirestoreDocumentModel {
   final String entryId;
   final String userId;
   CheckEntryDocumentModel({@required String userId, @required String entryId})
       : this.entryId = entryId?.applyTags(),
         this.userId = userId?.applyTags(),
-        super();
-  @override
-  IDynamicDocument build(ModelContext context) {
-    return FirestoreDocumentModel("user/$userId/entry/$entryId");
-  }
+        super("user/$userId/entry/$entryId");
 
   bool get isEntried {
     if (isEmpty(entryId)) return false;

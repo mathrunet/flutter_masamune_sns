@@ -9,21 +9,16 @@ class TimelineCollectionModel extends CollectionModel {
       {@required String userId, String target = "timeline", this.limit = 100})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
-        super();
+        super("$target?filteredBy=$userId");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.listen(
       "$target?filteredBy=$userId",
       query: FirestoreQuery.equalTo("user", userId)
           .orderByDesc("time")
           .limitAt(this.limit),
     );
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("$target?filteredBy=$userId");
   }
 
   Widget loadNext(String label) {

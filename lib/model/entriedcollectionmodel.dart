@@ -8,15 +8,15 @@ class EntriedCollectionModel extends CollectionModel {
       {@required String entryId, this.limit = 100, String target = "event"})
       : this.entryId = entryId?.applyTags(),
         this.target = target?.applyTags(),
-        super();
+        super("joined/$target/$entryId/entry");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.load(
       "$target/$entryId/entry",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
     ).joinAt(
-      path: "joined/$target/$entryId/entry",
+      path: this.path,
       key: "uid",
       builder: (col) {
         return FirestoreCollection.load("user?entryJoinedby=$entryId",
@@ -25,11 +25,6 @@ class EntriedCollectionModel extends CollectionModel {
                 : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
       },
     );
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("joined/$target/$entryId/entry");
   }
 
   Widget loadNext(String label) {

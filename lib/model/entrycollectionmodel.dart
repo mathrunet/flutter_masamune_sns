@@ -9,14 +9,15 @@ class EntryCollectionModel extends CollectionModel {
       {@required String userId, this.limit = 100, String target = "event"})
       : this.userId = userId?.applyTags(),
         this.target = target?.applyTags(),
-        super();
+        super("joined/user/$userId/entry");
 
   @override
-  Future<IDataCollection> createTask(ModelContext context) {
+  Future<IDataCollection> build(ModelContext context) {
     return FirestoreCollection.listen(
       "user/$userId/entry",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
     ).joinAt(
+      path: this.path,
       key: "uid",
       builder: (col) {
         return FirestoreCollection.listen("$target?entryJoinedby=$userId",
@@ -25,11 +26,6 @@ class EntryCollectionModel extends CollectionModel {
                 : FirestoreQuery.inArray("uid", col.map((e) => e.uid)));
       },
     );
-  }
-
-  @override
-  IDynamicCollection build(ModelContext context) {
-    return PathMap.get<IDataCollection>("joined/user/$userId/entry");
   }
 
   Future entry(String entryId) async {

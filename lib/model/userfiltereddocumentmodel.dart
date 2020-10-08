@@ -9,20 +9,16 @@ class UserFilteredDocumentModel extends DocumentModel {
       {@required String target, @required String eventId, this.prefix = "user"})
       : this.target = target?.applyTags(),
         this.eventId = eventId?.applyTags(),
-        super();
+        super("joined/$target/$eventId");
 
   @override
-  Future<IDataDocument> createTask(ModelContext context) {
+  Future<IDataDocument> build(ModelContext context) {
     return FirestoreDocument.listen("$target/$eventId").joinAt(
+      path: this.path,
       prefix: this.prefix,
       builder: (doc) {
         return FirestoreDocument.listen("user/${doc.getString("user")}");
       },
     );
-  }
-
-  @override
-  IDynamicDocument build(ModelContext context) {
-    return PathMap.get<IDataDocument>("$target/$eventId");
   }
 }
