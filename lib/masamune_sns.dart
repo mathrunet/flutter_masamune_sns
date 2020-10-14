@@ -12,6 +12,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:masamune_firebase/masamune_firebase.dart';
 import 'package:masamune_flutter/masamune_flutter.dart';
 import 'package:intl/intl.dart';
@@ -26,6 +27,7 @@ part 'snstimelinelisttile.dart';
 part 'snsprofileheader.dart';
 part 'snsprofilecontrol.dart';
 part 'snschatmessagetext.dart';
+part 'snsgallerytile.dart';
 part 'uipagechat.dart';
 
 part 'model/followcollectionmodel.dart';
