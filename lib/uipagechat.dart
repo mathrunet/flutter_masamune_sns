@@ -36,55 +36,9 @@ abstract class UIPageChat extends UIPageScaffold
         mainAxisAlignment: MainAxisAlignment.end,
         mainAxisSize: MainAxisSize.max,
         children: [
-          Container(
-              padding: const EdgeInsets.all(0),
-              decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(
-                          color: context.theme.dividerColor, width: 1))),
-              child: Container(
-                  color: context.theme.backgroundColor,
-                  child: Stack(children: [
-                    TextFormField(
-                      controller: this.controllers["text"],
-                      keyboardType: TextInputType.text,
-                      maxLines: 5,
-                      minLines: 1,
-                      textAlignVertical: TextAlignVertical.top,
-                      textAlign: TextAlign.start,
-                      onFieldSubmitted: (value) {
-                        if (isEmpty(value)) return;
-                        this.onPost(context, value);
-                      },
-                      decoration: InputDecoration(
-                        isDense: true,
-                        contentPadding:
-                            const EdgeInsets.fromLTRB(20, 20, 55, 20),
-                        border: InputBorder.none,
-                        enabledBorder: InputBorder.none,
-                        errorBorder: InputBorder.none,
-                        disabledBorder: InputBorder.none,
-                        hintText: null,
-                        labelText: null,
-                        counterText: "",
-                      ),
-                    ),
-                    Positioned(
-                      right: 10,
-                      top: 0,
-                      bottom: 0,
-                      child: IconButton(
-                          onPressed: () => this
-                              .onPost(context, this.controllers["text"]?.text),
-                          padding: const EdgeInsets.only(bottom: 0),
-                          visualDensity: VisualDensity.compact,
-                          icon: Icon(
-                            Icons.send,
-                            size: 25,
-                            color: context.theme.disabledColor,
-                          )),
-                    )
-                  ]))),
+          UIBottomChat(
+            onPost: this.onPost,
+          ),
           Expanded(
             child: ListView(
                 reverse: true,

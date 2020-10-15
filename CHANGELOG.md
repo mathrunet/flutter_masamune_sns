@@ -1,3 +1,7 @@
+## [0.5.1] - Update README (2020.10.15)
+
+* Add widgets.
+
 ## [0.5.0] - Update README (2020.09.25)
 
 * Support for flutter_hooks and flutter_widget_model.

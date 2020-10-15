@@ -29,6 +29,7 @@ part 'snsprofilecontrol.dart';
 part 'snschatmessagetext.dart';
 part 'snsgallerytile.dart';
 part 'uipagechat.dart';
+part 'uibottomchat.dart';
 
 part 'model/followcollectionmodel.dart';
 part 'model/followercollectionmodel.dart';
