@@ -20,6 +20,9 @@ class SNSProfileControl extends StatelessWidget {
   /// True if followed.
   final bool isFollow;
 
+  /// Display your own like icon.
+  final Widget myLikeIcon;
+
   /// Follow label.
   final String followLabel;
 
@@ -45,6 +48,7 @@ class SNSProfileControl extends StatelessWidget {
       this.onProfileEdit,
       this.onLike,
       this.likeIcon,
+      this.myLikeIcon,
       this.isFollow = false,
       this.followLabel = "Follow",
       this.unfollowLabel = "Unfollow",
@@ -63,24 +67,28 @@ class SNSProfileControl extends StatelessWidget {
           constraints: BoxConstraints.expand(height: 50),
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
           child: Row(children: [
-            if (this.likeIcon != null)
+            if (this.likeIcon != null) ...[
               (isEmpty(this.likeLabel)
                   ? IconButton(
                       visualDensity: VisualDensity.standard,
-                      icon: Icon(this.likeIcon,
-                          size: 26, color: context.theme.primaryColor),
+                      icon: this.myLikeIcon ??
+                          Icon(this.likeIcon,
+                              size: 26, color: context.theme.primaryColor),
                       onPressed: null)
                   : FlatButton.icon(
                       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
                       padding: const EdgeInsets.all(0),
                       onPressed: null,
-                      icon: Icon(this.likeIcon,
-                          size: 26, color: context.theme.primaryColor),
+                      icon: this.myLikeIcon ??
+                          Icon(this.likeIcon,
+                              size: 26, color: context.theme.primaryColor),
                       label: Text(
                         this.likeLabel,
                         style: TextStyle(
                             color: context.theme.primaryColor, fontSize: 22),
                       ))),
+              Space.width(20),
+            ],
             Expanded(
                 child: FlatButton.icon(
                     shape: RoundedRectangleBorder(

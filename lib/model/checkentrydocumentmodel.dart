@@ -11,7 +11,7 @@ class CheckEntryDocumentModel extends FirestoreDocumentModel {
   bool get isEntried {
     if (isEmpty(entryId)) return false;
     final state = this.state;
-    if (state == null || !state.containsKey("uid")) return false;
-    return state["uid"] == entryId;
+    if (state == null) return false;
+    return state.uid == entryId;
   }
 }

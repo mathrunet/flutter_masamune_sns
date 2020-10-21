@@ -6,13 +6,13 @@ class SNSProfileHeader extends StatelessWidget {
   final ImageProvider Function(BuildContext context) imageBuilder;
 
   /// Builder to get the name.
-  final String Function(BuildContext context) nameBuilder;
+  final Widget Function(BuildContext context) nameBuilder;
 
   /// Builder for getting text.
-  final String Function(BuildContext context) textBuilder;
+  final Widget Function(BuildContext context) textBuilder;
 
-  /// Name postfix.
-  final String namePostfix;
+  /// Builder for get the prefix.
+  final Widget Function(BuildContext context) prefixBuilder;
 
   /// Header item.
   final List<SNSProfileHeaderItem> items;
@@ -24,10 +24,10 @@ class SNSProfileHeader extends StatelessWidget {
   SNSProfileHeader(
       {this.imageBuilder,
       this.items,
+      this.prefixBuilder,
       @required this.nameBuilder,
       @required this.textBuilder,
-      this.imageSize = 100,
-      this.namePostfix = ""})
+      this.imageSize = 100})
       : assert(nameBuilder != null),
         assert(textBuilder != null);
 
@@ -36,8 +36,9 @@ class SNSProfileHeader extends StatelessWidget {
   /// [BuildContext]: Build Context.
   @override
   Widget build(BuildContext context) {
-    String name = this.nameBuilder(context);
-    String text = this.textBuilder(context);
+    Widget prefix = this.prefixBuilder?.call(context);
+    Widget name = this.nameBuilder?.call(context);
+    Widget text = this.textBuilder?.call(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: <Widget>[
@@ -85,12 +86,19 @@ class SNSProfileHeader extends StatelessWidget {
                                 )))),
               ],
             )),
-        if (isNotEmpty(name) || isNotEmpty(text))
+        if (name != null || text != null)
           Container(
               padding: const EdgeInsets.only(
                   left: 10, right: 10, top: 5, bottom: 20),
-              child: UIText((context) => "$name $namePostfix\n"
-                  "$text")),
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (prefix != null) prefix,
+                    if (name != null) name,
+                    if (text != null) text,
+                  ])),
       ],
     );
   }

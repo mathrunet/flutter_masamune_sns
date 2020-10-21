@@ -11,8 +11,10 @@ class SNSUtility {
       DataField(path, value);
       doc = await FirestoreDocument.listen(parent);
       doc[key] = (doc.getInt(key, 0) + value).limitLow(0);
+      if (doc is FirestoreDocument) doc.addCounterListener(key);
     } else {
       doc[key] = (doc.getInt(key, 0) + value).limitLow(0);
+      if (doc is FirestoreDocument) doc.addCounterListener(key);
     }
   }
 
@@ -278,7 +280,7 @@ class SNSUtility {
       {@required String userId, int length = 100}) {
     userId = userId?.applyTags();
     return FirestoreCollection.listen("user/$userId/follow?user=$userId",
-            query: FirestoreQuery.orderByDesc("time").limitAt(length))
+            query: FirestoreQuery.orderByDesc("time"))
         .joinAt(
             path: "joined/user/$userId/follow?user=$userId",
             key: "uid",
@@ -322,7 +324,7 @@ class SNSUtility {
       {@required String userId, int length = 100}) {
     userId = userId?.applyTags();
     return FirestoreCollection.listen("user/$userId/follower?user=$userId",
-            query: FirestoreQuery.orderByDesc("time").limitAt(length))
+            query: FirestoreQuery.orderByDesc("time"))
         .joinAt(
             path: "joined/user/$userId/follower?user=$userId",
             key: "uid",
@@ -567,6 +569,15 @@ class SNSUtility {
             return follow;
           },
           prefix: userPrefix)
+      ..joinWhere(
+          test: (newField, oldField) => false,
+          builder: (collection) async {
+            await Future.wait([
+              for (var doc in collection)
+                FirestoreCollection.listen("timeline/$userId/like")
+            ]);
+            return collection;
+          })
       ..joinWhere(
         test: (original, additional) {
           return additional.uid == original.uid;

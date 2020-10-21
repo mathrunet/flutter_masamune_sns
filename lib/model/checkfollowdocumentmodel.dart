@@ -11,7 +11,7 @@ class CheckFollowDocumentModel extends FirestoreDocumentModel {
   bool get isFolllow {
     if (isEmpty(followId) || isEmpty(userId)) return false;
     final state = this.state;
-    if (state == null || state.containsKey("uid")) return false;
-    return state["uid"] == followId;
+    if (state == null) return false;
+    return state.uid == followId;
   }
 }

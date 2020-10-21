@@ -11,7 +11,7 @@ class CheckLikeDocumentModel extends FirestoreDocumentModel {
   bool get isLike {
     if (isEmpty(likeId) || isEmpty(userId)) return false;
     final state = this.state;
-    if (state == null || state.containsKey("uid")) return false;
-    return state["uid"] == likeId;
+    if (state == null) return false;
+    return state.uid == likeId;
   }
 }
