@@ -40,8 +40,8 @@ class FollowCollecionModel extends CollectionModel {
     return Future.wait([
       followDoc.save(),
       followerDoc.save(),
-      SNSUtility._increment("user/$followId/followerCount", 1),
-      SNSUtility._increment("user/$userId/followCount", 1)
+      FirestoreUtility.increment("user/$followId/followerCount", 1),
+      FirestoreUtility.increment("user/$userId/followCount", 1)
     ]);
   }
 
@@ -51,8 +51,8 @@ class FollowCollecionModel extends CollectionModel {
     return Future.wait([
       FirestoreDocument.deleteAt("user/$followId/follower/$userId"),
       FirestoreDocument.deleteAt("user/$userId/follow/$followId"),
-      SNSUtility._increment("user/$followId/followerCount", -1),
-      SNSUtility._increment("user/$userId/followCount", -1)
+      FirestoreUtility.increment("user/$followId/followerCount", -1),
+      FirestoreUtility.increment("user/$userId/followCount", -1)
     ]);
   }
 

@@ -38,7 +38,7 @@ class LikeCollectionModel extends CollectionModel {
     return Future.wait([
       user.save(),
       like.save(),
-      SNSUtility._increment("$target/$likeId/likedCount", 1)
+      FirestoreUtility.increment("$target/$likeId/likedCount", 1)
     ]);
   }
 
@@ -48,7 +48,7 @@ class LikeCollectionModel extends CollectionModel {
     return Future.wait([
       FirestoreDocument.deleteAt("user/$userId/like/$likeId"),
       FirestoreDocument.deleteAt("$target/$likeId/liked/$userId"),
-      SNSUtility._increment("$target/$likeId/likedCount", -1)
+      FirestoreUtility.increment("$target/$likeId/likedCount", -1)
     ]);
   }
 

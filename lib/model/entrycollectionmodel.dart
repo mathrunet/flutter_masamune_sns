@@ -38,7 +38,7 @@ class EntryCollectionModel extends CollectionModel {
     return Future.wait([
       user.save(),
       entry.save(),
-      SNSUtility._increment("$target/$entryId/entryCount", 1)
+      FirestoreUtility.increment("$target/$entryId/entryCount", 1)
     ]);
   }
 
@@ -48,7 +48,7 @@ class EntryCollectionModel extends CollectionModel {
     return Future.wait([
       FirestoreDocument.deleteAt("user/$userId/entry/$entryId"),
       FirestoreDocument.deleteAt("$target/$entryId/entry/$userId"),
-      SNSUtility._increment("$target/$entryId/entryCount", -1)
+      FirestoreUtility.increment("$target/$entryId/entryCount", -1)
     ]);
   }
 
