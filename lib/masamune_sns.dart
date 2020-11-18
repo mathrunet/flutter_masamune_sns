@@ -32,6 +32,7 @@ part 'uipagechat.dart';
 part 'uibottomchat.dart';
 
 part 'model/followcollectionmodel.dart';
+part 'model/postcommentcollectionmodel.dart';
 part 'model/followercollectionmodel.dart';
 part 'model/checkfollowdocumentmodel.dart';
 part 'model/likecollectionmodel.dart';
