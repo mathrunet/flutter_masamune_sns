@@ -11,6 +11,9 @@ class SNSTimelineListTile extends StatelessWidget {
   /// User name.
   final String name;
 
+  /// User sub name.
+  final String subname;
+
   /// What happens when you tap your profile.
   final VoidAction onTapProfile;
 
@@ -44,6 +47,7 @@ class SNSTimelineListTile extends StatelessWidget {
       this.name,
       this.onTapProfile,
       this.image,
+      this.subname,
       this.likeCount,
       this.padding = const EdgeInsets.all(0),
       this.likeIcon,
@@ -70,25 +74,28 @@ class SNSTimelineListTile extends StatelessWidget {
                     if (this.name != null || this.avatar != null)
                       Container(
                           child: ListTile(
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 5, vertical: 0),
-                              dense: true,
-                              onTap: () {
-                                if (this.onTapProfile != null)
-                                  this.onTapProfile();
-                              },
-                              leading: (this.avatar != null)
-                                  ? Container(
-                                      width: 35,
-                                      height: 35,
-                                      child: CircleAvatar(
-                                        backgroundColor:
-                                            context.theme.disabledColor,
-                                        backgroundImage: this.avatar,
-                                      ))
-                                  : null,
-                              title: Text(this.name ?? Const.empty,
-                                  style: context.theme.textTheme.headline6))),
+                        contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 5, vertical: 0),
+                        dense: true,
+                        onTap: () {
+                          if (this.onTapProfile != null) this.onTapProfile();
+                        },
+                        leading: (this.avatar != null)
+                            ? Container(
+                                width: 35,
+                                height: 35,
+                                child: CircleAvatar(
+                                  backgroundColor: context.theme.disabledColor,
+                                  backgroundImage: this.avatar,
+                                ))
+                            : null,
+                        title: Text(this.name ?? Const.empty,
+                            style: isNotEmpty(this.subname)
+                                ? null
+                                : context.theme.textTheme.headline6),
+                        subtitle:
+                            isEmpty(this.subname) ? null : Text(this.subname),
+                      )),
                     if (this.image != null)
                       Container(
                           color: context.theme.canvasColor,
