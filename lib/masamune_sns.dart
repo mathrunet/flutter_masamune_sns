@@ -9,6 +9,7 @@
 library masamune.sns;
 
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -30,6 +31,7 @@ part 'snschatmessagetext.dart';
 part 'snsgallerytile.dart';
 part 'uipagechat.dart';
 part 'uibottomchat.dart';
+part 'snsbookmarkedlistcard.dart';
 
 part 'model/followcollectionmodel.dart';
 part 'model/postcommentcollectionmodel.dart';
@@ -44,4 +46,7 @@ part 'model/checkentrydocumentmodel.dart';
 part 'model/userfilteredcollectionmodel.dart';
 part 'model/userfiltereddocumentmodel.dart';
 part 'model/timelinecollectionmodel.dart';
+part 'model/timelinedocumentmodel.dart';
 part 'model/hometimelinecollectionmodel.dart';
+part 'model/bookmarkcollectionmodel.dart';
+part 'model/checkwatchdocumentmodel.dart';

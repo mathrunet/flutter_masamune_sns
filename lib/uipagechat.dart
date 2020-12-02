@@ -18,8 +18,18 @@ abstract class UIPageChat extends UIPageScaffold
   /// What happens when a message is posted.
   ///
   /// [context]: Build context.
-  /// [value]: Text value.
-  void onPost(BuildContext context, String value);
+  /// [value]: UIBottomChatData value.
+  void onPost(BuildContext context, UIBottomChatData value);
+
+  /// If you want to enable the posting of images True.
+  bool get enableImage => false;
+
+  /// The process of adding an image.
+  ///
+  /// [context]: Build context.
+  /// [value]: Callback for loading a file.
+  void onImage(
+      BuildContext context, void Function(dynamic fileOrUrl) onUpdate) {}
 
   /// Message list.
   ///
@@ -37,6 +47,8 @@ abstract class UIPageChat extends UIPageScaffold
         mainAxisSize: MainAxisSize.max,
         children: [
           UIBottomChat(
+            enableImage: this.enableImage,
+            onImage: this.onImage,
             onPost: this.onPost,
           ),
           Expanded(

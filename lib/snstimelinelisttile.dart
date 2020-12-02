@@ -41,6 +41,9 @@ class SNSTimelineListTile extends StatelessWidget {
   /// Process when timeline is tapped.
   final Function onTap;
 
+  /// If true, the bottom divider is displayed.
+  final bool showDivider;
+
   /// Timeline list tile widget for SNS.
   SNSTimelineListTile(
       {this.avatar,
@@ -49,9 +52,10 @@ class SNSTimelineListTile extends StatelessWidget {
       this.image,
       this.subname,
       this.likeCount,
-      this.padding = const EdgeInsets.all(0),
+      this.padding = const EdgeInsets.only(top: 10),
       this.likeIcon,
       this.text,
+      this.showDivider = true,
       this.onTap,
       this.onTapLike,
       this.dateFormat,
@@ -66,72 +70,69 @@ class SNSTimelineListTile extends StatelessWidget {
         onTap: this.onTap,
         child: Padding(
             padding: this.padding,
-            child: Container(
-                padding: const EdgeInsets.only(top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    if (this.name != null || this.avatar != null)
-                      Container(
-                          child: ListTile(
-                        contentPadding: const EdgeInsets.symmetric(
-                            horizontal: 5, vertical: 0),
-                        dense: true,
-                        onTap: () {
-                          if (this.onTapProfile != null) this.onTapProfile();
-                        },
-                        leading: (this.avatar != null)
-                            ? Container(
-                                width: 35,
-                                height: 35,
-                                child: CircleAvatar(
-                                  backgroundColor: context.theme.disabledColor,
-                                  backgroundImage: this.avatar,
-                                ))
-                            : null,
-                        title: Text(this.name ?? Const.empty,
-                            style: isNotEmpty(this.subname)
-                                ? null
-                                : context.theme.textTheme.headline6),
-                        subtitle:
-                            isEmpty(this.subname) ? null : Text(this.subname),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (this.name != null || this.avatar != null)
+                  Container(
+                      child: ListTile(
+                    contentPadding:
+                        const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
+                    dense: true,
+                    onTap: () {
+                      if (this.onTapProfile != null) this.onTapProfile();
+                    },
+                    leading: (this.avatar != null)
+                        ? Container(
+                            width: 35,
+                            height: 35,
+                            child: CircleAvatar(
+                              backgroundColor: context.theme.disabledColor,
+                              backgroundImage: this.avatar,
+                            ))
+                        : null,
+                    title: Text(this.name ?? Const.empty,
+                        style: isNotEmpty(this.subname)
+                            ? null
+                            : context.theme.textTheme.headline6),
+                    subtitle: isEmpty(this.subname) ? null : Text(this.subname),
+                  )),
+                if (this.image != null)
+                  Container(
+                      color: context.theme.canvasColor,
+                      constraints: BoxConstraints.expand(height: 200),
+                      child: Image(image: this.image, fit: BoxFit.cover)),
+                if (this.likeIcon != null)
+                  Container(
+                      constraints: BoxConstraints.expand(height: 50),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          IconButton(
+                            icon: this.likeIcon,
+                            onPressed: () {
+                              if (this.onTapLike != null) this.onTapLike();
+                            },
+                          ),
+                          if (this.likeCount != null) this.likeCount
+                        ],
                       )),
-                    if (this.image != null)
-                      Container(
-                          color: context.theme.canvasColor,
-                          constraints: BoxConstraints.expand(height: 200),
-                          child: Image(image: this.image, fit: BoxFit.cover)),
-                    if (this.likeIcon != null)
-                      Container(
-                          constraints: BoxConstraints.expand(height: 50),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              IconButton(
-                                icon: this.likeIcon,
-                                onPressed: () {
-                                  if (this.onTapLike != null) this.onTapLike();
-                                },
-                              ),
-                              if (this.likeCount != null) this.likeCount
-                            ],
-                          )),
-                    if (this.likeIcon == null && this.image != null) Space(),
-                    if (this.text != null)
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 10),
-                          child: Text(this.text)),
-                    if (this.time != null)
-                      Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 10),
-                          child: Text(
-                              (this.dateFormat ?? DateFormat.yMd().add_Hms())
-                                  .format(this.time),
-                              style: context.theme.textTheme.caption)),
-                    Divider()
-                  ],
-                ))));
+                if (this.likeIcon == null && this.image != null) Space(),
+                if (this.text != null)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: Text(this.text)),
+                if (this.time != null)
+                  Container(
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 5, horizontal: 10),
+                      child: Text(
+                          (this.dateFormat ?? DateFormat.yMd().add_Hms())
+                              .format(this.time),
+                          style: context.theme.textTheme.caption)),
+                if (this.showDivider) Divider()
+              ],
+            )));
   }
 }
