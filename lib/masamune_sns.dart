@@ -49,4 +49,8 @@ part 'model/timelinecollectionmodel.dart';
 part 'model/timelinedocumentmodel.dart';
 part 'model/hometimelinecollectionmodel.dart';
 part 'model/bookmarkcollectionmodel.dart';
+part 'model/checkreportdocumentmodel.dart';
 part 'model/checkwatchdocumentmodel.dart';
+part 'model/reportcollectionmodel.dart';
+part 'model/checkblockdocumentmodel.dart';
+part 'model/blockcollectionmodel.dart';

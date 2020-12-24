@@ -62,6 +62,29 @@ class TimelineCollectionModel extends CollectionModel {
           onNotFound: (key, value, collection) {
             value["liked"] = false;
           },
+        )
+        .joinWhere(
+          path: this.path,
+          test: (original, additional) {
+            return additional.uid == original.uid;
+          },
+          builder: (collection) {
+            return FirestoreCollection.listen(
+              "user/$userId/report?${target}Joined",
+              query: collection.length <= 0
+                  ? FirestoreQuery.empty()
+                  : FirestoreQuery.inArray(
+                      "uid",
+                      collection.map((e) => e.uid),
+                    ),
+            );
+          },
+          onFound: (key, value, document, collection) {
+            value["report"] = true;
+          },
+          onNotFound: (key, value, collection) {
+            value["report"] = false;
+          },
         );
   }
 

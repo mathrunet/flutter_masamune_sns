@@ -44,6 +44,18 @@ class TimelineDocumentModel extends DocumentModel {
           original["liked"] = true;
         }
       },
+    )
+        .joinAt(
+      builder: (document) async {
+        return FirestoreDocument.listen("user/$userId/report/${document.uid}");
+      },
+      onApply: (original, additional) {
+        if (additional == null || additional.length <= 0) {
+          original["report"] = false;
+        } else {
+          original["report"] = true;
+        }
+      },
     );
   }
 }
