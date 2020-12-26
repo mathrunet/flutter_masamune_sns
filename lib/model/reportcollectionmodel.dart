@@ -32,12 +32,8 @@ class ReportCollectionModel extends CollectionModel {
     if (isEmpty(userId) || isEmpty(reportId) || isEmpty(target)) return;
     userId = userId.applyTags();
     final user = FirestoreDocument.create("$target/$reportId/report/$userId");
-    FirestoreDocument report =
-        FirestoreDocument.create("user/$userId/report/$reportId");
-
     return Future.wait([
       user.save(),
-      report.save(),
       FirestoreUtility.increment("$target/$reportId/reportCount", 1)
     ]);
   }
@@ -46,7 +42,6 @@ class ReportCollectionModel extends CollectionModel {
     if (isEmpty(userId) || isEmpty(reportId) || isEmpty(target)) return;
     userId = userId.applyTags();
     return Future.wait([
-      FirestoreDocument.deleteAt("user/$userId/report/$reportId"),
       FirestoreDocument.deleteAt("$target/$reportId/report/$userId"),
       FirestoreUtility.increment("$target/$reportId/reportCount", -1)
     ]);

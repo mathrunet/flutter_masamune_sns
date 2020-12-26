@@ -32,6 +32,7 @@ part 'snsgallerytile.dart';
 part 'uipagechat.dart';
 part 'uibottomchat.dart';
 part 'snsbookmarkedlistcard.dart';
+part 'snsprofilemenu.dart';
 
 part 'model/followcollectionmodel.dart';
 part 'model/postcommentcollectionmodel.dart';
@@ -52,5 +53,5 @@ part 'model/bookmarkcollectionmodel.dart';
 part 'model/checkreportdocumentmodel.dart';
 part 'model/checkwatchdocumentmodel.dart';
 part 'model/reportcollectionmodel.dart';
-part 'model/checkblockdocumentmodel.dart';
+part 'model/checkblockeddocumentmodel.dart';
 part 'model/blockcollectionmodel.dart';

@@ -31,7 +31,7 @@ class BlockCollectionModel extends CollectionModel {
   Future block(String blockId) async {
     if (isEmpty(blockId) || isEmpty(userId) || isEmpty(target)) return;
     blockId = blockId.applyTags();
-    final user = FirestoreDocument.create("$target/$blockId/block/$userId");
+    final user = FirestoreDocument.create("$target/$blockId/blocked/$userId");
     FirestoreDocument block =
         FirestoreDocument.create("user/$userId/block/$blockId");
 
@@ -46,7 +46,7 @@ class BlockCollectionModel extends CollectionModel {
     blockId = blockId.applyTags();
     return Future.wait([
       FirestoreDocument.deleteAt("user/$userId/block/$blockId"),
-      FirestoreDocument.deleteAt("$target/$blockId/block/$userId"),
+      FirestoreDocument.deleteAt("$target/$blockId/blocked/$userId"),
     ]);
   }
 
