@@ -31,7 +31,6 @@ part 'snschatmessagetext.dart';
 part 'snsgallerytile.dart';
 part 'uipagechat.dart';
 part 'uibottomchat.dart';
-part 'snsbookmarkedlistcard.dart';
 part 'snsprofilemenu.dart';
 
 part 'model/followcollectionmodel.dart';
