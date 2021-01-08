@@ -72,13 +72,13 @@ class SNSProfileHeader extends StatelessWidget {
                                 child: Column(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
-                                    UIText((context) {
-                                      if (item.countBuilder == null) return "0";
-                                      return item
-                                              .countBuilder(context)
-                                              ?.toString() ??
-                                          "0";
-                                    },
+                                    Text(
+                                        (item.countBuilder == null)
+                                            ? "0"
+                                            : item
+                                                    .countBuilder(context)
+                                                    ?.toString() ??
+                                                "0",
                                         style:
                                             context.theme.textTheme.headline6),
                                     Text(item.title?.localize())

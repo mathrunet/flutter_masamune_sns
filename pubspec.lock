@@ -271,7 +271,7 @@ packages:
       name: flutter_hooks
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.14.1"
+    version: "0.15.0"
   flutter_reorderable_list:
     dependency: transitive
     description:
@@ -309,7 +309,7 @@ packages:
       name: flutter_widget_model
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2+1"
+    version: "0.6.0"
   font_awesome_flutter:
     dependency: "direct main"
     description:
@@ -372,28 +372,28 @@ packages:
       name: masamune_core
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.1+6"
+    version: "0.6.0+2"
   masamune_firebase:
     dependency: "direct main"
     description:
       name: masamune_firebase
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.2+5"
+    version: "0.6.0"
   masamune_flutter:
     dependency: "direct main"
     description:
       name: masamune_flutter
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.4+10"
+    version: "0.6.0+2"
   masamune_localize:
     dependency: transitive
     description:
       name: masamune_localize
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.5.0+1"
+    version: "0.6.0+1"
   masamune_test:
     dependency: "direct dev"
     description:
@@ -442,7 +442,7 @@ packages:
       name: path_provider
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.6.24"
+    version: "1.6.27"
   path_provider_linux:
     dependency: transitive
     description:
@@ -456,7 +456,7 @@ packages:
       name: path_provider_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.4+6"
+    version: "0.0.4+8"
   path_provider_platform_interface:
     dependency: transitive
     description:
