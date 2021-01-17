@@ -52,7 +52,7 @@ class SNSProfileHeader extends StatelessWidget {
                 Flexible(
                     flex: 1,
                     child: UIScope(
-                        child: (context) => Container(
+                        builder: (context, watch, child) => Container(
                             width: this.imageSize,
                             height: this.imageSize,
                             child: CircleAvatar(

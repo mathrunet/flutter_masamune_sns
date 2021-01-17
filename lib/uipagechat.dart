@@ -10,8 +10,8 @@ abstract class UIPageChat extends UIPageScaffold
   /// [context]: Build context.
   @override
   @mustCallSuper
-  void onLoad(BuildContext context) {
-    super.onLoad(context);
+  void onInit(BuildContext context) {
+    super.onInit(context);
     this.init({"text": Const.empty});
   }
 

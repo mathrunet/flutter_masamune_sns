@@ -133,7 +133,7 @@ class SNSProfileControl extends StatelessWidget {
             Padding(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                child: UIScope(child: (context) {
+                child: UIScope(builder: (context, watch, child) {
                   if (this.isFollow) {
                     return FlatButton.icon(
                       shape: const StadiumBorder(),
