@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class TimelineCollectionModel extends CollectionModel {
   final String targetUserId;
   final String userId;

@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class TimelineDocumentModel extends DocumentModel {
   final String userId;
   final String userKey;

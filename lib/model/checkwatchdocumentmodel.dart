@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class CheckWatchDocumentModel extends FirestoreDocumentModel {
   final String watchId;
   final String userId;

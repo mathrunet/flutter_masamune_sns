@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class FollowerCollectionModel extends CollectionModel {
   final int limit;
   final String userId;

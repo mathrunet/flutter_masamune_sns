@@ -2,7 +2,6 @@ part of masamune.sns;
 
 /// Template for creating chat pages.
 abstract class UIPageChat extends UIPageScaffold {
-
   /// What happens when a message is posted.
   ///
   /// [context]: Build context.

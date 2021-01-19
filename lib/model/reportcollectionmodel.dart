@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class ReportCollectionModel extends CollectionModel {
   final int limit;
   final String reportId;

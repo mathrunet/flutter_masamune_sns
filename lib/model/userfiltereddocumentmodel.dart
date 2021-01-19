@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class UserFilteredDocumentModel extends DocumentModel {
   final String target;
   final String eventId;

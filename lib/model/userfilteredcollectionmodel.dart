@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class UserFilteredCollectionModel extends CollectionModel {
   final String target;
   final String userId;

@@ -1,6 +1,5 @@
 part of masamune.sns;
 
-@immutable
 class PostCommentCollectionModel extends CollectionModel {
   final int limit;
   final String postId;
