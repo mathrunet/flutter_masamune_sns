@@ -1,19 +1,7 @@
 part of masamune.sns;
 
 /// Template for creating chat pages.
-abstract class UIPageChat extends UIPageScaffold
-    with UITextFieldControllerMixin {
-  /// Executed when the widget is loaded.
-  ///
-  /// Override and use.
-  ///
-  /// [context]: Build context.
-  @override
-  @mustCallSuper
-  void onInit(BuildContext context) {
-    super.onInit(context);
-    this.init({"text": Const.empty});
-  }
+abstract class UIPageChat extends UIPageScaffold {
 
   /// What happens when a message is posted.
   ///
