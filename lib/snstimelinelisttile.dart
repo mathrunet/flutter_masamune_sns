@@ -1,7 +1,7 @@
 part of masamune.sns;
 
 /// Timeline list tile widget for SNS.
-class SNSTimelineListTile extends StatelessWidget {
+class SNSTimelineListTile extends StatefulWidget {
   /// Avatar image for the user.
   final ImageProvider avatar;
 
@@ -44,6 +44,18 @@ class SNSTimelineListTile extends StatelessWidget {
   /// If true, the bottom divider is displayed.
   final bool showDivider;
 
+  /// Sets the maximum number of lines to display.
+  final int maxLines;
+
+  /// Ellipsis text.
+  final String ellipsisText;
+
+  /// Read more text.
+  final String readModeText;
+
+  /// Process when read more text is tapped.
+  final Function onTapReadMore;
+
   /// Timeline list tile widget for SNS.
   SNSTimelineListTile(
       {this.avatar,
@@ -52,6 +64,10 @@ class SNSTimelineListTile extends StatelessWidget {
       this.image,
       this.subname,
       this.likeCount,
+      this.maxLines,
+      this.onTapReadMore,
+      this.readModeText = "Read more",
+      this.ellipsisText = "\n...",
       this.padding = const EdgeInsets.only(top: 10),
       this.likeIcon,
       this.text,
@@ -61,77 +77,119 @@ class SNSTimelineListTile extends StatelessWidget {
       this.dateFormat,
       this.time});
 
+  @override
+  State<StatefulWidget> createState() => _SNSTimelineListTileState();
+}
+
+class _SNSTimelineListTileState extends State<SNSTimelineListTile> {
+  String _text;
+  bool _isMaxLine = false;
+  void initState() {
+    super.initState();
+    if (this.widget.maxLines != null && this.widget.maxLines > 0) {
+      List<String> tmp = this.widget.text?.split("\n");
+      if (tmp.length > this.widget.maxLines) {
+        this._isMaxLine = true;
+        this._text = tmp?.sublist(0, this.widget.maxLines)?.join("\n");
+      } else {
+        this._text = this.widget.text;
+      }
+    } else {
+      this._text = this.widget.text;
+    }
+  }
+
   /// Build method.
   ///
   /// [BuildContext]: Build Context.
   @override
   Widget build(BuildContext context) {
     return InkWell(
-        onTap: this.onTap,
+        onTap: this.widget.onTap,
         child: Padding(
-            padding: this.padding,
+            padding: this.widget.padding,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (this.name != null || this.avatar != null)
+                if (this.widget.name != null || this.widget.avatar != null)
                   Container(
                       child: ListTile(
                     contentPadding:
                         const EdgeInsets.symmetric(horizontal: 5, vertical: 0),
                     dense: true,
                     onTap: () {
-                      if (this.onTapProfile != null) this.onTapProfile();
+                      if (this.widget.onTapProfile != null)
+                        this.widget.onTapProfile();
                     },
-                    leading: (this.avatar != null)
+                    leading: (this.widget.avatar != null)
                         ? Container(
                             width: 35,
                             height: 35,
                             child: CircleAvatar(
                               backgroundColor: context.theme.disabledColor,
-                              backgroundImage: this.avatar,
+                              backgroundImage: this.widget.avatar,
                             ))
                         : null,
-                    title: Text(this.name ?? Const.empty,
-                        style: isNotEmpty(this.subname)
+                    title: Text(this.widget.name ?? Const.empty,
+                        style: isNotEmpty(this.widget.subname)
                             ? null
                             : context.theme.textTheme.headline6),
-                    subtitle: isEmpty(this.subname) ? null : Text(this.subname),
+                    subtitle: isEmpty(this.widget.subname)
+                        ? null
+                        : Text(this.widget.subname),
                   )),
-                if (this.image != null)
+                if (this.widget.image != null)
                   Container(
                       color: context.theme.canvasColor,
                       constraints: BoxConstraints.expand(height: 200),
-                      child: Image(image: this.image, fit: BoxFit.cover)),
-                if (this.likeIcon != null)
+                      child:
+                          Image(image: this.widget.image, fit: BoxFit.cover)),
+                if (this.widget.likeIcon != null)
                   Container(
                       constraints: BoxConstraints.expand(height: 50),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           IconButton(
-                            icon: this.likeIcon,
+                            icon: this.widget.likeIcon,
                             onPressed: () {
-                              if (this.onTapLike != null) this.onTapLike();
+                              if (this.widget.onTapLike != null)
+                                this.widget.onTapLike();
                             },
                           ),
-                          if (this.likeCount != null) this.likeCount
+                          if (this.widget.likeCount != null)
+                            this.widget.likeCount
                         ],
                       )),
-                if (this.likeIcon == null && this.image != null) Space(),
-                if (this.text != null)
+                if (this.widget.likeIcon == null && this.widget.image != null)
+                  Space(),
+                if (this.widget.text != null)
                   Container(
                       padding: const EdgeInsets.symmetric(
                           vertical: 5, horizontal: 10),
-                      child: Text(this.text)),
-                if (this.time != null)
+                      child: UIText(
+                        this.widget.text,
+                      )),
+                if (this._isMaxLine)
+                  FlatButton(
+                      onPressed: () {
+                        if (this.widget.onTapReadMore != null) {
+                          this.widget.onTapReadMore();
+                        } else if (this.widget.onTap != null) {
+                          this.widget.onTap();
+                        }
+                      },
+                      child: Text(this.widget.readModeText)),
+                if (this.widget.time != null)
                   Container(
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 5, horizontal: 10),
-                      child: Text(
-                          (this.dateFormat ?? DateFormat.yMd().add_Hms())
-                              .format(this.time),
-                          style: context.theme.textTheme.caption)),
-                if (this.showDivider) Divider()
+                    padding:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    child: Text(
+                        (this.widget.dateFormat ?? DateFormat.yMd().add_Hms())
+                            .format(this.widget.time),
+                        style: context.theme.textTheme.caption),
+                  ),
+                if (this.widget.showDivider) Divider()
               ],
             )));
   }

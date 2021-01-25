@@ -2,10 +2,18 @@ part of masamune.sns;
 
 class UIBottomChat extends StatefulWidget {
   final bool enableImage;
+  final FocusNode focusNode;
   final void Function(
       BuildContext context, void Function(dynamic fileOrUrl) onUpdate) onImage;
   final void Function(BuildContext context, UIBottomChatData value) onPost;
-  UIBottomChat({this.onPost, this.enableImage = false, this.onImage});
+  final String hintText;
+  UIBottomChat({
+    this.onPost,
+    this.focusNode,
+    this.enableImage = false,
+    this.onImage,
+    this.hintText,
+  });
 
   @override
   State<StatefulWidget> createState() => _UIBottomChatState();
@@ -55,6 +63,7 @@ class _UIBottomChatState extends State<UIBottomChat> {
             TextFormField(
               controller: this._controller,
               keyboardType: TextInputType.text,
+              focusNode: this.widget.focusNode,
               maxLines: 5,
               minLines: 1,
               textAlignVertical: TextAlignVertical.top,
@@ -76,7 +85,7 @@ class _UIBottomChatState extends State<UIBottomChat> {
                 focusedErrorBorder: InputBorder.none,
                 errorBorder: InputBorder.none,
                 disabledBorder: InputBorder.none,
-                hintText: null,
+                hintText: this.widget.hintText,
                 labelText: null,
                 counterText: "",
               ),
