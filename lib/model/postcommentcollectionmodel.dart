@@ -19,9 +19,10 @@ class PostCommentCollectionModel extends CollectionModel {
     return FirestoreCollection.listen(
       "$target/$postId/comment",
       query: FirestoreQuery.orderByDesc("time").limitAt(this.limit),
-    ).joinAt(
+    ).joinWhere(
       path: this.path,
-      key: "uid",
+      test: (original, additional) =>
+          original.getString("user") == additional.uid,
       prefix: this.prefix,
       builder: (col) {
         return FirestoreCollection.listen(
